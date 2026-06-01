@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Libre_Caslon_Text, Manrope } from "next/font/google";
 import Navbar from "@repo/ui/layout/Navbar";
 import Footer from "@repo/ui/layout/Footer";
+import brandLogo from "../public/brand_logo.png";
 import "./globals.css";
 
 const libreCaslon = Libre_Caslon_Text({
@@ -38,7 +39,7 @@ export default function RootLayout({
         />
       </head>
       <body className="flex flex-col min-h-screen">
-        <Navbar />
+        <Navbar logo={brandLogo} />
         <main className="flex-grow pt-20">{children}</main>
         <Footer />
       </body>

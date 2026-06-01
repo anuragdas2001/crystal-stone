@@ -1,8 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+type NavbarProps = {
+  /** Pass a static import from the host app for reliable Next/Image optimization */
+  logo?: StaticImageData | string;
+};
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -14,7 +20,7 @@ const navLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ logo = "/brand_logo.png" }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
@@ -33,16 +39,19 @@ export default function Navbar() {
     >
       <div className="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 max-w-container-max mx-auto">
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-2 min-w-0">
-          <span
-            className="material-symbols-outlined text-primary fill-icon shrink-0"
-            style={{ fontSize: "28px" }}
-          >
-            domain
-          </span>
-          <span className="font-display-lg text-headline-lg-mobile md:text-[26px] text-primary tracking-tight truncate">
-            Crystal Stone Properties
-          </span>
+        <Link
+          href="/"
+          className="relative block h-60 w-[240px] sm:w-[280px] md:w-[320px] mt-10 shrink-0"
+          aria-label="Crystal Stone Properties home"
+        >
+          <Image
+            src="/brand_logo.png"
+            alt="Crystal Stone Properties"
+            width={500}
+            height={500}
+            priority
+            className=" w-auto object-contain"
+          />
         </Link>
 
         {/* Desktop Nav */}

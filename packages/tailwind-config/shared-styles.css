@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand colors */
+  --color-primary: #e6c183;
+  --color-primary-fixed: #ffdea8;
+  --color-primary-container: #c5a368;
+  --color-on-primary: #422d00;
+  --color-on-primary-container: #503907;
+  --color-surface-tint: #e6c183;
+
+  --color-background: #081425;
+  --color-on-background: #d8e3fb;
+  --color-surface: #081425;
+  --color-on-surface: #d8e3fb;
+  --color-on-surface-variant: #d1c5b5;
+
+  --color-surface-container-lowest: #040e1f;
+  --color-surface-container-low: #111c2d;
+  --color-surface-container: #152031;
+  --color-surface-container-high: #1f2a3c;
+  --color-surface-container-highest: #2a3548;
+  --color-surface-variant: #2a3548;
+  --color-surface-bright: #2f3a4c;
+  --color-surface-dim: #081425;
+
+  --color-secondary: #bec6e0;
+  --color-secondary-container: #3f465c;
+  --color-outline: #9a8f81;
+  --color-outline-variant: #4d463a;
+
+  --color-gold-accent: #c1a46e;
+
+  /* Typography families */
+  --font-display-lg: var(--font-libre), "Libre Caslon Text", Georgia, serif;
+  --font-display-xl: var(--font-libre), "Libre Caslon Text", Georgia, serif;
+  --font-headline-lg: var(--font-libre), "Libre Caslon Text", Georgia, serif;
+  --font-headline-lg-mobile: var(--font-libre), "Libre Caslon Text", Georgia, serif;
+  --font-body-lg: var(--font-manrope), Manrope, system-ui, sans-serif;
+  --font-body-md: var(--font-manrope), Manrope, system-ui, sans-serif;
+  --font-label-md: var(--font-manrope), Manrope, system-ui, sans-serif;
+  --font-serif: var(--font-libre), "Libre Caslon Text", Georgia, serif;
+  --font-sans: var(--font-manrope), Manrope, system-ui, sans-serif;
+
+  /* Type scale */
+  --text-display-xl: 4.5rem;
+  --text-display-xl--line-height: 1.15;
+  --text-display-xl--letter-spacing: -0.02em;
+
+  --text-display-lg: 3.5rem;
+  --text-display-lg--line-height: 1.15;
+  --text-display-lg--letter-spacing: -0.01em;
+
+  --text-headline-lg: 2.5rem;
+  --text-headline-lg--line-height: 1.2;
+
+  --text-headline-lg-mobile: 2rem;
+  --text-headline-lg-mobile--line-height: 1.25;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.55;
+
+  --text-body-md: 1rem;
+  --text-body-md--line-height: 1.5;
+
+  --text-label-md: 0.875rem;
+  --text-label-md--line-height: 1.4;
+  --text-label-md--letter-spacing: 0.05em;
+  --text-label-md--font-weight: 600;
+
+  /* Layout spacing */
+  --spacing-gutter: 2rem;
+  --spacing-section-gap: 10rem;
+  --spacing-margin-mobile: 1.25rem;
+  --spacing-margin-desktop: 5rem;
+
+  --container-max: 90rem;
+
+  --radius-DEFAULT: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+}
+
+@utility max-w-container-max {
+  max-width: var(--container-max);
+}
+
+@layer base {
+  html {
+    @apply antialiased scroll-smooth;
+  }
+
+  body {
+    @apply bg-background text-on-surface font-body-md min-h-screen overflow-x-hidden;
+  }
+
+  .material-symbols-outlined {
+    font-family: "Material Symbols Outlined";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+  }
+
+  .fill-icon {
+    font-variation-settings: "FILL" 1, "wght" 300, "GRAD" 0, "opsz" 24;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    background: rgba(30, 41, 59, 0.45);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(197, 163, 104, 0.2);
+  }
+
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(197, 163, 104, 0.4),
+      transparent
+    );
+  }
+
+  .hero-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(8, 20, 37, 0.55) 0%,
+      rgba(8, 20, 37, 0.35) 45%,
+      rgba(8, 20, 37, 0.75) 100%
+    );
+  }
+
+  .luxury-button {
+    @apply transition-all duration-300 hover:brightness-110 active:scale-[0.98];
+  }
+
+  .card-hover img,
+  .card-hover [data-card-bg] {
+    @apply transition-transform duration-700;
+  }
+
+  .card-hover:hover img,
+  .card-hover:hover [data-card-bg] {
+    @apply scale-105;
+  }
+
+  .section-eyebrow {
+    @apply font-label-md text-label-md text-primary uppercase tracking-widest;
+  }
+
+  .section-title {
+    @apply font-display-lg text-headline-lg-mobile md:text-headline-lg text-on-surface;
+  }
+
+  .section-body {
+    @apply font-body-md text-body-md text-on-surface-variant;
+  }
+}

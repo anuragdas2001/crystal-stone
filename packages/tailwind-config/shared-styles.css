@@ -9,23 +9,23 @@
   --color-on-primary-container: #503907;
   --color-surface-tint: #e6c183;
 
-  --color-background: #081425;
-  --color-on-background: #d8e3fb;
-  --color-surface: #081425;
-  --color-on-surface: #d8e3fb;
+  --color-background: #000000;
+  --color-on-background: #f5f5f5;
+  --color-surface: #000000;
+  --color-on-surface: #f5f5f5;
   --color-on-surface-variant: #d1c5b5;
 
-  --color-surface-container-lowest: #040e1f;
-  --color-surface-container-low: #111c2d;
-  --color-surface-container: #152031;
-  --color-surface-container-high: #1f2a3c;
-  --color-surface-container-highest: #2a3548;
-  --color-surface-variant: #2a3548;
-  --color-surface-bright: #2f3a4c;
-  --color-surface-dim: #081425;
+  --color-surface-container-lowest: #000000;
+  --color-surface-container-low: #0a0a0a;
+  --color-surface-container: #111111;
+  --color-surface-container-high: #1a1a1a;
+  --color-surface-container-highest: #222222;
+  --color-surface-variant: #222222;
+  --color-surface-bright: #2a2a2a;
+  --color-surface-dim: #000000;
 
-  --color-secondary: #bec6e0;
-  --color-secondary-container: #3f465c;
+  --color-secondary: #c4c4c4;
+  --color-secondary-container: #2a2a2a;
   --color-outline: #9a8f81;
   --color-outline-variant: #4d463a;
 
@@ -116,7 +116,7 @@
 
 @layer components {
   .glass-panel {
-    background: rgba(30, 41, 59, 0.45);
+    background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(197, 163, 104, 0.2);
@@ -135,9 +135,9 @@
   .hero-overlay {
     background: linear-gradient(
       180deg,
-      rgba(8, 20, 37, 0.55) 0%,
-      rgba(8, 20, 37, 0.35) 45%,
-      rgba(8, 20, 37, 0.75) 100%
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.35) 45%,
+      rgba(0, 0, 0, 0.75) 100%
     );
   }
 

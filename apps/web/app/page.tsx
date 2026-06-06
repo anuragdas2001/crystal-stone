@@ -215,7 +215,7 @@ export default function HomePage() {
             {/* Belvedere — large */}
             <PropertyCard
               className="md:col-span-8"
-              image="https://lh3.googleusercontent.com/aida-public/AB6AXuAZApUBmL6QhQIR-b9YL5D2EbppUEUwSGwshVQbdov3NW4M83Wvoq0E5qWP5uHExWG2gsHTQ0k8RpCRGTYLeNct30_fbnQB9oAy8tJujUb9MOK7sv8v-C5GTsYib30Be5Bj6IgJNKGy4dnIEXJnUrIF5dUZxq4fyABMJm2dlxgitt_xTfZSwgREj0VCEwpB9tBXN4KkZY4RwnpJjbt0CADLCQYLCYFi0wdQ-XYCIstgTWjqln6tElohNJjuNv2WWdGhQ35_Tevxwhg"
+              image="/P1.png"
               badge="Signature Series Villa"
               title="The Belvedere Estate"
               location="Amalfi Coast"
@@ -238,7 +238,7 @@ export default function HomePage() {
             {/* Whispering Pines */}
             <PropertyCard
               className="md:col-span-5"
-              image="https://lh3.googleusercontent.com/aida-public/AB6AXuAmtyt7SPXjR_SgONsxsziwi6nMQbm4ZEFgwaUacTelmJsCmrkcxdYtWMLZwi1OvkVtNU1yRcSeji1b3UoAHEyAsUmJVuweaXYxIBFhVsUX41GZGF-BXZ1vJhrtfNj_AiK02blAe2hEAwM_-Wi3wan55DLGchmEdpDa0-vXbNe6HRgaQS7BUo6vt52NQuuzVr7Apu3-Q8cCJJfHlOkE3rozitPNR9f4XPo8JcAA7AZuRLKXrsW7SyT9vKdadj8OoY7pgVYGisYF1CI"
+              image="/P2.png"
               badge="Residential Land"
               title="Whispering Pines Parcel"
               location="Aspen"

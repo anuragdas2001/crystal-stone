@@ -41,16 +41,16 @@ export default function Navbar({ logo = "/brand_logo.png" }: NavbarProps) {
         {/* Brand */}
         <Link
           href="/"
-          className="relative block h-60 w-[240px] sm:w-[280px] md:w-[320px] mt-10 shrink-0"
+          className="flex items-center shrink-0"
           aria-label="Crystal Stone Properties home"
         >
           <Image
-            src="/brand_logo.png"
+            src="/brand_logo_horizontal.png"
             alt="Crystal Stone Properties"
-            width={500}
-            height={500}
+            width={320}
+            height={80}
             priority
-            className=" w-auto object-contain"
+            className="h-16 md:h-24 w-auto object-contain"
           />
         </Link>
 

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const legalLinks = [
@@ -23,15 +24,14 @@ export default function Footer() {
         {/* Brand */}
         <div className="md:col-span-4 flex flex-col gap-6">
           <div className="flex items-center gap-2">
-            <span
-              className="material-symbols-outlined text-primary"
-              style={{ fontSize: "36px", fontVariationSettings: "'FILL' 1" }}
-            >
-              domain
-            </span>
-            <span className="font-display-lg text-[26px] text-primary tracking-tight">
-              Crystal Stone Properties
-            </span>
+            <Image
+              src="/brand_logo_horizontal.png"
+              alt="Crystal Stone Properties"
+              width={320}
+              height={80}
+              priority
+              className="h-16 md:h-24 w-auto object-contain"
+            />
           </div>
           <p className="font-body-md text-body-md text-on-surface-variant max-w-xs opacity-80">
             Curating the world's most exceptional real estate for those who demand the extraordinary.

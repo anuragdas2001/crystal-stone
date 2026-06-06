@@ -50,7 +50,7 @@ export default function Navbar({ logo = "/brand_logo.png" }: NavbarProps) {
             width={320}
             height={80}
             priority
-            className="h-16 md:h-24 w-auto object-contain"
+            className="w-auto h-auto max-h-20 object-contain"
           />
         </Link>
 

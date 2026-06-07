@@ -48,9 +48,9 @@ const assetClasses = [
 ];
 
 const projects = [{
-  name:"Rajanukunte Premium Layout",
-  location:"Rajanukunte, Bengaluru",
-  image:""
+  name: "Rajanukunte Premium Layout",
+  location: "Rajanukunte, Bengaluru",
+  image: ""
 }]
 
 function SectionDivider() {
@@ -214,18 +214,22 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter auto-rows-[minmax(320px,400px)]">
             {/* Belvedere — large */}
             <PropertyCard
-              className="md:col-span-8"
-              image="/P1.png"
-              badge="Signature Series Villa"
-              title="The Belvedere Estate"
-              location="Amalfi Coast"
-              meta="12,500 SQFT"
-              statLabel="Projected ROI"
-              statValue="14.2%"
+              className="md:col-span-12"
+              image="/Rajanukunte_Premium_Layout.png"
+              badge="Residential Land"
+              title="Airport Growth Belt"
+              location="Rajanukunte | North Bengaluru Growth Corridor"
+              statValue=""
+              compact
+              metrics={[
+                "25% ROI Potential",
+                "₹40 Lakhs Onwards",
+                "20 Mins to Airport",
+              ]}
             />
 
             {/* Aetherion — small */}
-            <PropertyCard
+            {/* <PropertyCard
               className="md:col-span-4"
               image="/Rajanukunte_Premium_Layout.png"
               badge="Prime Commercial"
@@ -233,10 +237,10 @@ export default function HomePage() {
               location="Rajanukunte, Bengaluru"
               statValue="Est. $120M"
               compact
-            />
+            /> */}
 
             {/* Whispering Pines */}
-            <PropertyCard
+            {/* <PropertyCard
               className="md:col-span-5"
               image="/P2.png"
               badge="Residential Land"
@@ -244,10 +248,10 @@ export default function HomePage() {
               location="Aspen"
               statValue="45 Acres"
               compact
-            />
+            /> */}
 
             {/* Off-market card */}
-            <div className="md:col-span-7 glass-panel p-8 md:p-10 flex flex-col justify-center">
+            <div className="md:col-span-12 glass-panel p-8 md:p-10 flex flex-col justify-center">
               <span className="material-symbols-outlined text-primary text-4xl mb-6">diamond</span>
               <h3 className="font-headline-lg text-2xl text-on-surface mb-4">Off-Market Exclusives</h3>
               <p className="section-body mb-8 max-w-lg">
@@ -434,6 +438,7 @@ function PropertyCard({
   title,
   location,
   meta,
+  metrics,
   statLabel,
   statValue,
   compact = false,
@@ -444,6 +449,7 @@ function PropertyCard({
   title: string;
   location: string;
   meta?: string;
+  metrics?: string[];
   statLabel?: string;
   statValue: string;
   compact?: boolean;
@@ -485,14 +491,29 @@ function PropertyCard({
           </div>
         </div>
         <div className="text-right shrink-0 ml-4">
-          {statLabel && (
-            <p className="font-label-md text-primary/80 uppercase tracking-widest text-[10px] mb-1">
-              {statLabel}
-            </p>
+          {metrics?.length ? (
+            <div className="space-y-2">
+              {metrics.map((metric) => (
+                <div
+                  key={metric}
+                  className="px-3 py-1 bg-black/50 backdrop-blur-sm border border-primary/30 rounded text-primary text-xs uppercase tracking-wider"
+                >
+                  {metric}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              {statLabel && (
+                <p className="font-label-md text-primary/80 uppercase tracking-widest text-[10px] mb-1">
+                  {statLabel}
+                </p>
+              )}
+              <p className={`font-headline-lg text-primary ${compact ? "text-lg" : "text-2xl"}`}>
+                {statValue}
+              </p>
+            </>
           )}
-          <p className={`font-headline-lg text-primary ${compact ? "text-lg" : "text-2xl"}`}>
-            {statValue}
-          </p>
         </div>
       </div>
     </div>

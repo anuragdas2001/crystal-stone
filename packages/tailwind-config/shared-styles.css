@@ -124,21 +124,17 @@
 
   .gold-divider {
     height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(197, 163, 104, 0.4),
-      transparent
-    );
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(197, 163, 104, 0.4),
+        transparent);
   }
 
   .hero-overlay {
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.55) 0%,
-      rgba(0, 0, 0, 0.35) 45%,
-      rgba(0, 0, 0, 0.75) 100%
-    );
+    background: linear-gradient(180deg,
+        rgba(0, 0, 0, 0.15) 0%,
+        rgba(0, 0, 0, 0.10) 40%,
+        rgba(0, 0, 0, 0.60) 100%);
   }
 
   .luxury-button {

@@ -34,8 +34,11 @@ export default function Navbar({ logo = "/brand_logo.png" }: NavbarProps) {
   return (
     <nav
       id="main-nav"
-      className={`fixed top-0 w-full z-50 border-b border-outline-variant/30 transition-all duration-300
-        ${scrolled ? "bg-background/95 shadow-lg shadow-black/20" : "bg-background/80 backdrop-blur-md"}`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300
+        ${scrolled
+          ? "bg-black/80 backdrop-blur-xl border-b border-white/10"
+          : "bg-transparent"
+        }`}
     >
       <div className="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 max-w-container-max mx-auto">
         {/* Brand */}

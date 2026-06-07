@@ -40,7 +40,7 @@ export default function RootLayout({
       </head>
       <body className="flex flex-col min-h-screen">
         <Navbar logo={brandLogo} />
-        <main className="flex-grow pt-20">{children}</main>
+        <main className="flex-grow">{children}</main>
         <Footer />
       </body>
     </html>

@@ -375,7 +375,7 @@ export default function HomePage() {
             priority
             unoptimized
           />
-          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute inset-0 bg-black/50" />
           <div className="absolute inset-0" style={{
             background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.05) 100%)"
           }} />
@@ -387,7 +387,7 @@ export default function HomePage() {
 
         <motion.div
           style={{ opacity: heroOpacity }}
-          className="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col items-center text-center py-16"
+          className="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col items-center text-center py-36"
         >
           <motion.p
             className="section-eyebrow mb-6"

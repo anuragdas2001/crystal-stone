@@ -505,13 +505,13 @@ export default function HomePage() {
           </div> */}
 
           {/* Search bar fade in */}
-          <motion.div
+          {/* <motion.div
             className="w-full max-w-4xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 1.4 }}
           >
-            {/* SearchBar placeholder if not available */}
+            
             <div className="glass-panel p-4 flex items-center gap-3">
               <span className="material-symbols-outlined text-primary">
                 search
@@ -522,7 +522,7 @@ export default function HomePage() {
                 className="bg-transparent flex-1 outline-none text-on-surface placeholder-on-surface-variant font-body-lg"
               />
             </div>
-          </motion.div>
+          </motion.div> */}
         </motion.div>
 
         {/* Scroll indicator */}

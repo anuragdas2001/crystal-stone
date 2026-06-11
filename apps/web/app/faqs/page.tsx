@@ -18,215 +18,114 @@ const legalChecks = [
 
 const faqs: FaqItem[] = [
   {
-    question: "What types of homes do you offer?",
-    answer: (
-      <div className="space-y-3">
-        <p>We offer three distinct residential categories:</p>
-        <ul className="space-y-2 list-none">
-          <li>
-            <strong className="text-on-surface">Aspire Series:</strong> Affordable independent homes.
-          </li>
-          <li>
-            <strong className="text-on-surface">Signature Series:</strong> Premium luxury homes.
-          </li>
-          <li>
-            <strong className="text-on-surface">Capital Series:</strong> High-demand homes ideal for investment.
-          </li>
-        </ul>
-      </div>
-    ),
-  },
-  {
-    question: "Are these gated community projects or apartments?",
+    question: "How do you verify the properties listed on your platform?",
     answer: (
       <p>
-        No. Our homes are independent units — they offer privacy, freedom to customise, and greater
-        long-term value compared to gated apartments or villa projects.
+        Every property undergoes an initial review of ownership records, available title documents,
+        tax receipts, and other relevant information before being presented to prospective buyers.
+        We also encourage buyers to conduct independent legal due diligence before completing any
+        transaction.
       </p>
     ),
   },
   {
-    question: "Can I live in the home and still earn rental income?",
+    question: "Do you offer properties that are not publicly advertised?",
     answer: (
       <p>
-        Yes, many of our buyers choose to live in the property and rent out a portion, especially in
-        larger or duplex layouts. It&apos;s a great way to offset homeownership costs.
+        Yes. Some opportunities are sourced through our private network of landowners, investors,
+        developers, and industry contacts. These properties may not be publicly listed and are
+        shared with qualified buyers based on their requirements.
       </p>
     ),
   },
   {
-    question: "Are these homes ready to move in?",
+    question: "Can you help me find investment properties with high growth potential?",
     answer: (
       <p>
-        Some properties are move-in ready, while others are in development. We&apos;ll share options
-        based on your timeline and preferences.
+        Yes. We focus on identifying opportunities based on location growth, infrastructure
+        development, market demand, future development plans, and overall investment potential —
+        rather than simply listing available properties.
       </p>
     ),
   },
   {
-    question: "What makes your projects different from traditional homes?",
+    question: "I live outside Bangalore or India. Can you help me purchase property remotely?",
     answer: (
       <p>
-        Our homes are backed by <strong className="text-on-surface">strong due diligence</strong> and
-        are curated for better resale demand. We verify ownership, conduct criminal checks, and
-        validate with BBMP, BDA, and DC offices — all with supporting legal vetting.
+        Yes. We regularly assist buyers, NRIs, and investors who are unable to visit properties
+        frequently. Our team can coordinate property inspections, documentation support, virtual
+        walkthroughs, and transaction guidance throughout the process.
       </p>
     ),
   },
   {
-    question: "Do you offer home customization or modification options?",
+    question: "How do I know if a property is priced fairly?",
     answer: (
       <p>
-        Yes. Depending on the stage of the project, we can offer customisation in layout, interiors,
-        and design finishes.
+        Property values are assessed using market trends, comparable transactions, location
+        advantages, development potential, infrastructure growth, and current demand conditions.
+        Buyers receive transparent information to help them make informed decisions.
       </p>
     ),
   },
   {
-    question: "Do your homes come with amenities like a gym or clubhouse?",
+    question: "Do you only deal with residential properties?",
     answer: (
       <p>
-        No. These are independent homes, not part of apartment or gated community complexes. But they
-        offer the advantage of personal space, garden area, and flexibility.
+        No. We work across multiple property categories including residential plots, villas,
+        apartments, commercial properties, development sites, and large land parcels suitable for
+        investors and developers.
       </p>
     ),
   },
   {
-    question: "How do I know the project is legally clear?",
-    answer: (
-      <div className="space-y-3">
-        <p>
-          We follow a strict <strong className="text-on-surface">multi-stage approval process</strong>{" "}
-          that includes:
-        </p>
-        <ul className="space-y-2">
-          {legalChecks.map((check) => (
-            <li key={check} className="flex items-start gap-2">
-              <span className="material-symbols-outlined text-primary text-lg shrink-0">check</span>
-              {check}
-            </li>
-          ))}
-        </ul>
-      </div>
-    ),
-  },
-  {
-    question: "Can I buy a home as an investment and not live in it?",
+    question: "What information should I have ready before enquiring about a property?",
     answer: (
       <p>
-        Absolutely. Many buyers purchase to generate rental income and benefit from appreciation. You
-        don&apos;t have to occupy the home to profit from it.
+        Useful details include budget range, preferred location, property type, investment or
+        end-use objective, financing requirements, and expected purchase timeline.
       </p>
     ),
   },
   {
-    question: "What kind of rental income can I expect?",
+    question: "Why are some properties available below market value?",
     answer: (
       <p>
-        While returns vary by location, property size, and market conditions, independent homes
-        typically offer better rental yields than apartments in similar price brackets.
+        Certain opportunities may be attractively priced due to urgent sales, investor exits,
+        settlement situations, redevelopment opportunities, or specific transaction requirements.
+        Each opportunity should be evaluated based on its individual circumstances and potential
+        risks.
       </p>
     ),
   },
   {
-    question: "Can you help me find tenants if I buy a home for rental income?",
+    question: "What happens after I submit an enquiry?",
     answer: (
       <p>
-        Yes, we offer post-purchase support, including assistance with tenant sourcing and property
-        management services.
+        Our team reviews your requirements, contacts you for an initial discussion, understands
+        your objectives, and recommends suitable opportunities based on your budget, preferences,
+        and investment goals.
       </p>
     ),
   },
   {
-    question: "Do I need to be in Bangalore to purchase a home with you?",
+    question: "Why should I work with Crystal Stone Properties instead of searching on property portals?",
     answer: (
       <p>
-        No, we work with clients across India and abroad. All documentation and processes can be
-        handled remotely with our team.
+        Property portals provide listings. We focus on helping clients evaluate opportunities,
+        verify information, identify potential risks, access off-market opportunities, and make
+        informed real estate decisions through a more personalised approach.
       </p>
     ),
   },
   {
-    question: "Are these homes loan-eligible?",
+    question: "Do you work directly with landowners, developers, and investors?",
     answer: (
       <p>
-        Yes, our projects are approved by leading banks. We can help connect you with financing
-        partners based on your eligibility.
+        Yes. Our network includes landowners, developers, investors, channel partners, and industry
+        professionals — allowing us to source opportunities that may not always be available through
+        traditional property listing platforms.
       </p>
-    ),
-  },
-  {
-    question: "How do I know which category is right for me?",
-    answer: (
-      <p>
-        Our team will understand your living or investment goals and suggest options from Aspire,
-        Signature, or Capital Series accordingly.
-      </p>
-    ),
-  },
-  {
-    question: "What if I want to exit the investment in a few years?",
-    answer: (
-      <p>
-        We help homeowners with resale through our active buyer network and market advisory. Our homes
-        are positioned for strong resale demand due to location, legal clarity, and structure.
-      </p>
-    ),
-  },
-  {
-    question: "Are there any hidden costs or unclear charges?",
-    answer: (
-      <p>
-        No. All costs, approvals, and details are shared transparently once you choose a property.
-        Our goal is to build trust through complete clarity.
-      </p>
-    ),
-  },
-  {
-    question: "What documents will I get during the purchase?",
-    answer: (
-      <p>
-        You&apos;ll receive the sale deed, approved building plan, legal verification summary, tax
-        documents, and ownership proof — everything needed for a clean transfer.
-      </p>
-    ),
-  },
-  {
-    question: "Who are these homes ideal for?",
-    answer: (
-      <p>
-        Our homes suit a wide range of buyers — first-time homeowners, families upgrading to larger
-        spaces, and long-term investors looking for a tangible, appreciating asset.
-      </p>
-    ),
-  },
-  {
-    question: "Is buying an independent home risky?",
-    answer: (
-      <p>
-        Not when you buy from a team that puts{" "}
-        <strong className="text-on-surface">legal, structural, and financial due diligence</strong>{" "}
-        first. Our projects are thoroughly verified, so you don&apos;t get stuck with a problematic
-        property.
-      </p>
-    ),
-  },
-  {
-    question: "How do I get started?",
-    answer: (
-      <div className="space-y-4">
-        <p>
-          Just fill out our quick Smart Buyer Survey and our team will reach out with curated options
-          tailored to your needs.
-        </p>
-        <Link
-          href="/contact"
-          className="inline-flex items-center gap-2 font-label-md text-primary uppercase tracking-widest border-b border-primary/40 hover:border-primary pb-1 transition-colors"
-        >
-          Link to Survey
-          <span className="material-symbols-outlined text-sm">arrow_forward</span>
-        </Link>
-      </div>
     ),
   },
 ];

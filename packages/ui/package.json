@@ -16,6 +16,8 @@
     "dev:components": "tsc --watch"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.2.5",
+    "class-variance-authority": "^0.7.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "recharts": "^3.8.0"

@@ -15,7 +15,7 @@ const navLinks = [
   { label: "About", href: "/about" },
   { label: "Properties", href: "/properties" },
   // { label: "Private Equity – SPV", href: "/private-equity" },
-  {label: " Invest With Us", href: "/invest-with-us" },
+  {label: " Partner With Us", href: "/invest-with-us" },
   { label: "Services", href: "/services" },
   { label: "FAQs", href: "/faqs" },
   { label: "Contact", href: "/contact" },

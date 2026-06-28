@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Libre_Caslon_Text, Manrope } from "next/font/google";
-import Navbar from "@repo/ui/layout/Navbar";
-import Footer from "@repo/ui/layout/Footer";
-import brandLogo from "../public/brand_logo.png";
 import "./globals.css";
 
 const libreCaslon = Libre_Caslon_Text({
@@ -38,11 +35,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0..1,0&display=swap"
         />
       </head>
-      <body className="flex flex-col min-h-screen">
-        <Navbar logo={brandLogo} />
-        <main className="flex-grow">{children}</main>
-        <Footer />
-      </body>
+      <body className="flex min-h-screen flex-col">{children}</body>
     </html>
   );
 }

@@ -10,11 +10,11 @@ const legalLinks = [
 
 const companyLinks = [
   { label: "About", href: "/about" },
-  { label: "Properties", href: "/properties" },
-  { label: "Services", href: "/services" },
-  { label: "Private Equity", href: "/private-equity" },
+  // { label: "Properties", href: "/properties" },
+  // { label: "Services", href: "/services" },
+  // { label: "Private Equity", href: "/private-equity" },
   { label: "FAQs", href: "/faqs" },
-  { label: "Contact", href: "/contact" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 export default function Footer() {

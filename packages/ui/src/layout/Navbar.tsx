@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "../button";
 
 type NavbarProps = {
   /** Pass a static import from the host app for reliable Next/Image optimization */
@@ -12,20 +13,20 @@ type NavbarProps = {
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
+  // { label: "About", href: "/about" },
   { label: "Properties", href: "/properties" },
   // { label: "Private Equity – SPV", href: "/private-equity" },
-  {label: " Partner With Us", href: "/invest-with-us" },
+  { label: " Partner With Us", href: "/invest-with-us" },
   { label: "Services", href: "/services" },
-  { label: "FAQs", href: "/faqs" },
-  { label: "Contact", href: "/contact" },
+  // { label: "FAQs", href: "/faqs" },
+  // { label: "Contact", href: "/contact" },
 ];
 
 export default function Navbar({ logo = "/brand_logo.png" }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
-
+  const router = useRouter();
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handler, { passive: true });
@@ -36,9 +37,10 @@ export default function Navbar({ logo = "/brand_logo.png" }: NavbarProps) {
     <nav
       id="main-nav"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300
-        ${scrolled
-          ? "bg-black/80 backdrop-blur-xl border-b border-white/10"
-          : "bg-transparent"
+        ${
+          scrolled
+            ? "bg-black/80 backdrop-blur-xl border-b border-white/10"
+            : "bg-transparent"
         }`}
     >
       <div className="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 max-w-container-max mx-auto">
@@ -71,14 +73,21 @@ export default function Navbar({ logo = "/brand_logo.png" }: NavbarProps) {
                 key={link.label}
                 href={link.href}
                 className={`font-label-md text-label-md uppercase tracking-widest transition-colors duration-300 whitespace-nowrap
-                  ${isActive
-                    ? "text-primary border-b-2 border-primary pb-0.5"
-                    : "text-on-surface-variant hover:text-primary"}`}
+                  ${
+                    isActive
+                      ? "text-primary border-b-2 border-primary pb-0.5"
+                      : "text-on-surface-variant hover:text-primary"
+                  }`}
               >
                 {link.label}
               </Link>
             );
           })}
+          <Button
+          onClick={() => router.push('/login')}
+          className="luxury-button h-10 rounded-lg bg-primary font-label-md text-label-md uppercase tracking-widest text-on-primary">
+            Get Started
+          </Button>
         </div>
 
         {/* CTA */}
@@ -90,7 +99,7 @@ export default function Navbar({ logo = "/brand_logo.png" }: NavbarProps) {
         </Link> */}
 
         {/* Mobile toggle */}
-        <button
+        <Button
           className="lg:hidden flex flex-col gap-1.5 p-2 text-primary"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
@@ -98,11 +107,13 @@ export default function Navbar({ logo = "/brand_logo.png" }: NavbarProps) {
           <span
             className={`block h-px w-6 bg-primary transition-all duration-300 ${mobileOpen ? "rotate-45 translate-y-2" : ""}`}
           />
-          <span className={`block h-px w-6 bg-primary transition-all ${mobileOpen ? "opacity-0" : ""}`} />
+          <span
+            className={`block h-px w-6 bg-primary transition-all ${mobileOpen ? "opacity-0" : ""}`}
+          />
           <span
             className={`block h-px w-6 bg-primary transition-all duration-300 ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`}
           />
-        </button>
+        </Button>
       </div>
 
       {/* Mobile menu

@@ -79,7 +79,7 @@ export default function LoginPage() {
       </section>
 
       {/* Login panel */}
-      <section className="flex flex-1 items-center justify-center px-6 py-12 md:px-12">
+      <section className="flex flex-1 items-center justify-center px-6 pt-12 md:px-12">
         <div className="w-full max-w-md">
           <Link
             href="/"

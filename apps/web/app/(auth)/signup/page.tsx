@@ -91,7 +91,7 @@ export default function SignupPage() {
       </section>
 
       {/* Signup panel */}
-      <section className="flex flex-1 items-center justify-center overflow-y-auto px-6 py-12 md:px-12">
+      <section className="flex flex-1 items-center justify-center overflow-y-auto px-6 pt-40">
         <div className="w-full max-w-md py-8">
           <Link
             href="/login"

@@ -25,6 +25,35 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Authentication
+
+The API uses Better Auth with Prisma and Postgres. NeonDB works through the standard Prisma `DATABASE_URL`.
+
+Local auth endpoints are mounted at:
+
+```bash
+http://localhost:3001/api/auth/*
+```
+
+Required production environment variables:
+
+- `DATABASE_URL`
+- `BETTER_AUTH_URL`
+- `BETTER_AUTH_SECRET`
+- `WEB_ORIGIN`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+
+For local development, copy the root `.env.example` values into your shell or local env files and replace the database and Google OAuth placeholders.
+
+Prisma commands:
+
+```bash
+npm run db:generate
+npm run db:migrate
+npm run db:deploy
+```
+
 ## Project setup
 
 ```bash

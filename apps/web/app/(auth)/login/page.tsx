@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Gem, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Label } from "@repo/ui/label";
+import { authClient } from "../../../lib/auth-client";
 
 const FEATURES = [
   "Verified Properties",
@@ -16,11 +18,50 @@ const FEATURES = [
 ];
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // TODO: wire up authentication
+    setError("");
+    setIsSubmitting(true);
+
+    const { error } = await authClient.signIn.email({
+      email,
+      password,
+      callbackURL: "/",
+    });
+
+    setIsSubmitting(false);
+
+    if (error) {
+      setError(error.message ?? "Unable to sign in.");
+      return;
+    }
+
+    router.push("/");
+    router.refresh();
+  }
+
+  async function handleGoogleSignIn() {
+    setError("");
+    setIsGoogleLoading(true);
+
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+
+    setIsGoogleLoading(false);
+
+    if (error) {
+      setError(error.message ?? "Unable to continue with Google.");
+    }
   }
 
   return (
@@ -108,6 +149,9 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
                   className="h-14 flex-1 border-0 bg-transparent px-0 shadow-none font-body-md text-on-surface placeholder:text-outline focus-visible:ring-0 focus-visible:ring-offset-0"
                   placeholder="john@example.com"
                 />
@@ -127,6 +171,9 @@ export default function LoginPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  required
                   className="h-14 flex-1 border-0 bg-transparent px-0 shadow-none font-body-md text-on-surface placeholder:text-outline focus-visible:ring-0 focus-visible:ring-offset-0"
                   placeholder="••••••••"
                 />
@@ -153,11 +200,18 @@ export default function LoginPage() {
               </Button>
             </div>
 
+            {error ? (
+              <p className="font-body-md text-sm text-red-400" role="alert">
+                {error}
+              </p>
+            ) : null}
+
             <Button
               type="submit"
+              disabled={isSubmitting}
               className="luxury-button h-14 w-full rounded-lg bg-primary font-label-md text-label-md uppercase tracking-widest text-on-primary"
             >
-              Sign In
+              {isSubmitting ? "Signing In..." : "Sign In"}
             </Button>
           </form>
 
@@ -172,6 +226,8 @@ export default function LoginPage() {
           <Button
             type="button"
             variant="outline"
+            onClick={handleGoogleSignIn}
+            disabled={isGoogleLoading}
             className="luxury-button flex h-14 w-full items-center justify-center gap-3 rounded-lg border border-outline-variant bg-transparent font-label-md text-label-md uppercase tracking-widest text-on-surface transition-colors hover:border-primary/40 hover:bg-surface-container-low"
           >
             <svg className="h-5 w-5" viewBox="0 0 48 48" aria-hidden="true">
@@ -192,7 +248,7 @@ export default function LoginPage() {
                 d="M43.6 20.5H42V20H24v8h11.3c-1 2.9-2.9 5.3-5.4 6.9l6.5 5.5C39.9 37.1 44 31.5 44 24c0-1.2-.1-2.4-.4-3.5z"
               />
             </svg>
-            Continue with Google
+            {isGoogleLoading ? "Opening Google..." : "Continue with Google"}
           </Button>
 
           <p className="mt-8 text-center text-body-md text-on-surface-variant">

@@ -1,6 +1,3 @@
-import Navbar from "@repo/ui/layout/Navbar";
-import brandLogo from "../../public/brand_logo.png";
-
 export default function AuthLayout({
   children,
 }: {

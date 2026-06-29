@@ -3,19 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Gem,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  User,
-  Phone,
-} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Label } from "@repo/ui/label";
+import { authClient } from "../../../lib/auth-client";
 
 const BENEFITS = [
   "Early Access to Listings",
@@ -25,11 +18,52 @@ const BENEFITS = [
 ];
 
 export default function SignupPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // TODO: wire up registration
+    setError("");
+    setIsSubmitting(true);
+
+    const { error } = await authClient.signUp.email({
+      name,
+      email,
+      password,
+      callbackURL: "/",
+    });
+
+    setIsSubmitting(false);
+
+    if (error) {
+      setError(error.message ?? "Unable to create your account.");
+      return;
+    }
+
+    router.push("/");
+    router.refresh();
+  }
+
+  async function handleGoogleSignIn() {
+    setError("");
+    setIsGoogleLoading(true);
+
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+
+    setIsGoogleLoading(false);
+
+    if (error) {
+      setError(error.message ?? "Unable to continue with Google.");
+    }
   }
 
   return (
@@ -47,7 +81,6 @@ export default function SignupPage() {
 
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-black/0" />
-
 
         {/* Content */}
         <div className="relative z-10 flex h-full w-full items-center px-16">
@@ -123,6 +156,8 @@ export default function SignupPage() {
                   id="fullName"
                   type="text"
                   autoComplete="name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
                   required
                   className="h-14 flex-1 border-0 bg-transparent px-0 font-body-md text-on-surface shadow-none placeholder:text-outline focus-visible:ring-0 focus-visible:ring-offset-0"
                   placeholder="John Doe"
@@ -144,30 +179,11 @@ export default function SignupPage() {
                   id="email"
                   type="email"
                   autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                   required
                   className="h-14 flex-1 border-0 bg-transparent px-0 font-body-md text-on-surface shadow-none placeholder:text-outline focus-visible:ring-0 focus-visible:ring-offset-0"
                   placeholder="john@example.com"
-                />
-              </div>
-            </div>
-
-            {/* Phone Number Input */}
-            <div>
-              <Label
-                htmlFor="phone"
-                className="mb-2 block font-label-md text-label-md uppercase tracking-widest text-on-surface-variant"
-              >
-                Phone Number
-              </Label>
-              <div className="flex items-center rounded-lg border border-outline-variant bg-surface-container-low px-4 transition-colors focus-within:border-primary/60">
-                <Phone className="mr-3 h-4 w-4 shrink-0 text-outline" />
-                <Input
-                  id="phone"
-                  type="tel"
-                  autoComplete="tel"
-                  required
-                  className="h-14 flex-1 border-0 bg-transparent px-0 font-body-md text-on-surface shadow-none placeholder:text-outline focus-visible:ring-0 focus-visible:ring-offset-0"
-                  placeholder="+1 (555) 000-0000"
                 />
               </div>
             </div>
@@ -186,7 +202,10 @@ export default function SignupPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
                   required
+                  minLength={8}
                   className="h-14 flex-1 border-0 bg-transparent px-0 font-body-md text-on-surface shadow-none placeholder:text-outline focus-visible:ring-0 focus-visible:ring-offset-0"
                   placeholder="••••••••"
                 />
@@ -203,12 +222,19 @@ export default function SignupPage() {
               </div>
             </div>
 
+            {error ? (
+              <p className="font-body-md text-sm text-red-400" role="alert">
+                {error}
+              </p>
+            ) : null}
+
             <div className="pt-2">
               <Button
                 type="submit"
+                disabled={isSubmitting}
                 className="luxury-button h-14 w-full rounded-lg bg-primary font-label-md text-label-md uppercase tracking-widest text-on-primary"
               >
-                Sign Up
+                {isSubmitting ? "Creating Account..." : "Sign Up"}
               </Button>
             </div>
           </form>
@@ -224,6 +250,8 @@ export default function SignupPage() {
           <Button
             type="button"
             variant="outline"
+            onClick={handleGoogleSignIn}
+            disabled={isGoogleLoading}
             className="luxury-button flex h-14 w-full items-center justify-center gap-3 rounded-lg border border-outline-variant bg-transparent font-label-md text-label-md uppercase tracking-widest text-on-surface transition-colors hover:border-primary/40 hover:bg-surface-container-low"
           >
             <svg className="h-5 w-5" viewBox="0 0 48 48" aria-hidden="true">
@@ -244,7 +272,7 @@ export default function SignupPage() {
                 d="M43.6 20.5H42V20H24v8h11.3c-1 2.9-2.9 5.3-5.4 6.9l6.5 5.5C39.9 37.1 44 31.5 44 24c0-1.2-.1-2.4-.4-3.5z"
               />
             </svg>
-            Continue with Google
+            {isGoogleLoading ? "Opening Google..." : "Continue with Google"}
           </Button>
 
           <p className="mt-8 text-center font-body-md text-on-surface-variant">

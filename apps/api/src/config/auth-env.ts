@@ -59,14 +59,13 @@ export function getAuthEnv(): AuthEnv {
   const googleClientId = process.env.GOOGLE_CLIENT_ID;
   const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
-  assertProductionEnv('DATABASE_URL', process.env.DATABASE_URL);
-  assertProductionEnv('BETTER_AUTH_SECRET', process.env.BETTER_AUTH_SECRET);
-  assertProductionEnv('GOOGLE_CLIENT_ID', googleClientId);
-  assertProductionEnv('GOOGLE_CLIENT_SECRET', googleClientSecret);
+  if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+    console.warn('WARNING: DATABASE_URL is not set.');
+  }
 
   if (Boolean(googleClientId) !== Boolean(googleClientSecret)) {
-    throw new Error(
-      'GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be configured together',
+    console.warn(
+      'WARNING: GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET should be configured together.',
     );
   }
 

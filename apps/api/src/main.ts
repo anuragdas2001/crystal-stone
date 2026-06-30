@@ -22,9 +22,9 @@ async function bootstrap() {
   const authHandler = toNodeHandler(auth.handler);
 
   app.use((req: Request, res: Response, next: NextFunction) => {
+    const urlPath = (req.originalUrl || req.url || '').split('?')[0];
     const isAuthRoute =
-      req.originalUrl === '/api/auth' ||
-      req.originalUrl.startsWith('/api/auth/');
+      urlPath === '/api/auth' || urlPath.startsWith('/api/auth/');
 
     if (!isAuthRoute) {
       next();

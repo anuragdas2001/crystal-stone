@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 // Mock Data for Luxury Properties
 const PRIME_PROPERTIES = [
@@ -229,12 +230,18 @@ export default function RealEstateDashboardPage() {
               />
             </div>
 
-            <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-outline-variant/40 bg-surface-container text-on-surface-variant hover:border-primary hover:text-primary transition-all">
+            <button
+              onClick={() => toast("You have 4 new VIP client mandates pending review.", { icon: "🔔" })}
+              className="relative flex h-10 w-10 items-center justify-center rounded-full border border-outline-variant/40 bg-surface-container text-on-surface-variant hover:border-primary hover:text-primary transition-all"
+            >
               <span className="material-symbols-outlined text-[20px]">notifications</span>
               <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-primary" />
             </button>
 
-            <button className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-semibold text-on-primary transition-all hover:brightness-110 shadow-lg shadow-primary/10">
+            <button
+              onClick={() => toast.success("Exclusive listing intake mandate initialized.")}
+              className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-semibold text-on-primary transition-all hover:brightness-110 shadow-lg shadow-primary/10"
+            >
               <span className="material-symbols-outlined text-[16px]">add</span>
               Add Exclusive Listing
             </button>

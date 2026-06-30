@@ -22,7 +22,7 @@ export function createAuth(prisma: PrismaClient) {
     },
     emailAndPassword: {
       enabled: true,
-      minPasswordLength: 8,
+      minPasswordLength: 6,
       requireEmailVerification: false,
     },
     socialProviders: env.google

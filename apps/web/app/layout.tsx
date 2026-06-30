@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { Libre_Caslon_Text, Manrope } from "next/font/google";
 import { AuthSessionProvider } from "../providers/auth-session-provider";
+import { ToasterProvider } from "../providers/toaster-provider";
 import "./globals.css";
 
 const libreCaslon = Libre_Caslon_Text({
@@ -41,7 +42,10 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-screen flex-col">
-        <AuthSessionProvider>{children}</AuthSessionProvider>
+        <AuthSessionProvider>
+          <ToasterProvider />
+          {children}
+        </AuthSessionProvider>
       </body>
     </html>
   );

@@ -8,6 +8,7 @@ import { ArrowLeft, Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Label } from "@repo/ui/label";
+import toast from "react-hot-toast";
 import { useAppStore } from "../../../store/use-app-store";
 
 const BENEFITS = [
@@ -33,6 +34,7 @@ export default function SignupPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const loadingToast = toast.loading("Creating your private investor vault...");
     const result = await signUpWithEmail({
       name,
       email,
@@ -40,9 +42,14 @@ export default function SignupPage() {
       callbackURL: "/login",
     });
 
+    toast.dismiss(loadingToast);
+
     if (result.ok) {
-      router.push("/");
+      toast.success("Account created successfully! Welcome to Crystal Stone.");
+      router.push("/login");
       router.refresh();
+    } else {
+      toast.error(result.error || "Registration failed. Please check your inputs.");
     }
   }
 

@@ -8,6 +8,7 @@ import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Label } from "@repo/ui/label";
+import toast from "react-hot-toast";
 import { useAppStore } from "../../../store/use-app-store";
 
 const FEATURES = [
@@ -32,15 +33,21 @@ export default function LoginPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const loadingToast = toast.loading("Authenticating credentials...");
     const result = await signInWithEmail({
       email,
       password,
       callbackURL: "/dashboard",
     });
 
+    toast.dismiss(loadingToast);
+
     if (result.ok) {
-      router.push("/");
+      toast.success("Welcome back to Crystal Stone Private Portal.");
+      router.push("/dashboard");
       router.refresh();
+    } else {
+      toast.error(result.error || "Authentication failed. Please check credentials.");
     }
   }
 

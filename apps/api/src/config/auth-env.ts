@@ -47,7 +47,10 @@ function assertProductionEnv(
 export function getAuthEnv(): AuthEnv {
   const port = parsePort(process.env.PORT);
   const apiBaseUrl = normalizeOrigin(
-    process.env.BETTER_AUTH_URL ?? `http://localhost:${port}`,
+    process.env.BETTER_AUTH_URL ??
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : `http://localhost:${port}`),
   );
   const webOrigin = normalizeOrigin(
     process.env.WEB_ORIGIN ?? DEFAULT_WEB_ORIGIN,

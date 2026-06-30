@@ -15,10 +15,22 @@ async function bootstrap() {
 
   app.enableCors({
     credentials: true,
-    origin: [
-      "https://crystal-stone-web-v1.vercel.app",
-      "http://localhost:3000",
-    ],
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      if (
+        !origin ||
+        origin === 'https://crystal-stone-web-v1.vercel.app' ||
+        origin.endsWith('.vercel.app') ||
+        origin.startsWith('http://localhost:') ||
+        env.trustedOrigins.includes(origin)
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
   });
 
   const auth = createAuth(app.get(PrismaService));
@@ -32,6 +44,29 @@ async function bootstrap() {
     if (!isAuthRoute) {
       next();
       return;
+    }
+
+    const origin = req.headers.origin;
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, X-Requested-With',
+      );
+      res.setHeader(
+        'Access-Control-Allow-Methods',
+        'GET, POST, PUT, DELETE, OPTIONS',
+      );
+    }
+
+    if (req.method === 'OPTIONS') {
+      res.status(204).end();
+      return;
+    }
+
+    if (req.originalUrl && !req.url.startsWith('/api/auth')) {
+      req.url = req.originalUrl;
     }
 
     void Promise.resolve(authHandler(req, res)).catch(next);

@@ -187,7 +187,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
       const { error } = await authClient.signIn.social({
         provider: "google",
         callbackURL: absoluteCallbackURL,
-        prompt: "select_account",
       });
 
       if (error) {

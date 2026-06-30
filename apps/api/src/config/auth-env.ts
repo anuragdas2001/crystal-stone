@@ -10,7 +10,7 @@ export type AuthEnv = {
 };
 
 const DEFAULT_API_PORT = 3001;
-const DEFAULT_WEB_ORIGIN = 'http://localhost:3000';
+const DEFAULT_WEB_ORIGIN = process.env.WEB_ORIGIN || 'http://localhost:3000';
 const DEV_AUTH_SECRET = 'dev-only-better-auth-secret-change-before-production';
 
 function normalizeOrigin(origin: string) {
@@ -74,6 +74,8 @@ export function getAuthEnv(): AuthEnv {
     trustedOrigins: Array.from(
       new Set([
         webOrigin,
+        'https://*.vercel.app',
+        'http://localhost:*',
         ...splitOrigins(process.env.BETTER_AUTH_TRUSTED_ORIGINS),
       ]),
     ),

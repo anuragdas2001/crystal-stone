@@ -46,6 +46,13 @@ Required production environment variables:
 
 For local development, copy the root `.env.example` values into your shell or local env files and replace the database and Google OAuth placeholders.
 
+The API loads environment variables from these files when present:
+
+- `apps/api/.env.local`
+- `apps/api/.env`
+- `.env.local`
+- `.env`
+
 Prisma commands:
 
 ```bash

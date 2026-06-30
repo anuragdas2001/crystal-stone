@@ -14,6 +14,12 @@ export function createAuth(prisma: PrismaClient) {
     database: prismaAdapter(prisma, {
       provider: 'postgresql',
     }),
+    account: {
+      accountLinking: {
+        enabled: true,
+        trustedProviders: ['google'],
+      },
+    },
     emailAndPassword: {
       enabled: true,
       minPasswordLength: 8,
@@ -21,7 +27,10 @@ export function createAuth(prisma: PrismaClient) {
     },
     socialProviders: env.google
       ? {
-          google: env.google,
+          google: {
+            ...env.google,
+            prompt: 'select_account',
+          },
         }
       : undefined,
   });

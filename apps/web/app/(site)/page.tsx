@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import type Lenis from "@studio-freight/lenis";
 import {
   motion,
   useScroll,
@@ -12,12 +13,7 @@ import {
   AnimatePresence,
   useMotionValue,
 } from "framer-motion";
-import {
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-} from "recharts";
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis } from "recharts";
 import {
   ChartContainer,
   ChartTooltip,
@@ -98,11 +94,11 @@ const opportunitySelection = [
 ];
 
 const filters = [
-  { title: "Legal Score",          icon: Scale       },
-  { title: "Infrastructure Score", icon: Building2   },
-  { title: "Growth Score",         icon: TrendingUp  },
-  { title: "Investment Score",     icon: Landmark    },
-  { title: "Risk Score",           icon: ShieldCheck },
+  { title: "Legal Score", icon: Scale },
+  { title: "Infrastructure Score", icon: Building2 },
+  { title: "Growth Score", icon: TrendingUp },
+  { title: "Investment Score", icon: Landmark },
+  { title: "Risk Score", icon: ShieldCheck },
 ];
 
 const investorBenefits = [
@@ -113,7 +109,7 @@ const investorBenefits = [
   },
   {
     icon: "insights",
-    title: "Opportunity Intelligence",
+    title: "Market Intelligence",
     desc: "We continuously track infrastructure, market movements, and growth corridors.",
   },
   {
@@ -129,11 +125,11 @@ const investorBenefits = [
 ];
 
 const frameworkData = [
-  { metric: "Legal",          score: 94 },
-  { metric: "Infrastructure", score: 91 },
-  { metric: "Growth",         score: 88 },
-  { metric: "Demand",         score: 85 },
-  { metric: "Risk",           score: 92 },
+  { metric: "Legal", rating: "Strong", score: 95 },
+  { metric: "Infrastructure", rating: "High", score: 88 },
+  { metric: "Growth", rating: "High", score: 90 },
+  { metric: "Demand", rating: "Moderate", score: 75 },
+  { metric: "Risk", rating: "Low", score: 92 },
 ];
 
 const chartConfig = {
@@ -146,20 +142,23 @@ const chartConfig = {
 // ─── Lenis smooth scroll ──────────────────────────────────────
 function useLenis() {
   useEffect(() => {
-    let lenis: any;
+    let lenis: Lenis | undefined;
     import("@studio-freight/lenis").then(({ default: Lenis }) => {
-      lenis = new Lenis({
+      const instance = new Lenis({
         duration: 1.2,
         easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
       });
+      lenis = instance;
       function raf(time: number) {
-        lenis.raf(time);
+        instance.raf(time);
         requestAnimationFrame(raf);
       }
       requestAnimationFrame(raf);
     });
-    return () => { lenis?.destroy(); };
+    return () => {
+      lenis?.destroy();
+    };
   }, []);
 }
 
@@ -180,7 +179,10 @@ function MagneticWrapper({ children }: { children: React.ReactNode }) {
     <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
-      onMouseLeave={() => { x.set(0); y.set(0); }}
+      onMouseLeave={() => {
+        x.set(0);
+        y.set(0);
+      }}
       style={{ x, y }}
       className="inline-block"
     >
@@ -198,26 +200,52 @@ function CustomCursor() {
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    const move = (e: MouseEvent) => { cursorX.set(e.clientX); cursorY.set(e.clientY); };
+    const move = (e: MouseEvent) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+    };
     const over = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
-      setHovered(!!(t.closest("a") || t.closest("button") || t.closest("[data-cursor-expand]")));
+      setHovered(
+        !!(
+          t.closest("a") ||
+          t.closest("button") ||
+          t.closest("[data-cursor-expand]")
+        ),
+      );
     };
     window.addEventListener("mousemove", move);
     window.addEventListener("mouseover", over);
-    return () => { window.removeEventListener("mousemove", move); window.removeEventListener("mouseover", over); };
+    return () => {
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseover", over);
+    };
   }, [cursorX, cursorY]);
 
   return (
     <>
       <motion.div
         className="fixed top-0 left-0 w-2 h-2 rounded-full bg-primary z-[9999] pointer-events-none mix-blend-difference"
-        style={{ x: cursorX, y: cursorY, translateX: "-50%", translateY: "-50%" }}
+        style={{
+          x: cursorX,
+          y: cursorY,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
       />
       <motion.div
         className="fixed top-0 left-0 rounded-full border border-primary/60 z-[9998] pointer-events-none"
-        style={{ x: springX, y: springY, translateX: "-50%", translateY: "-50%" }}
-        animate={{ width: hovered ? 48 : 24, height: hovered ? 48 : 24, opacity: hovered ? 0.8 : 0.4 }}
+        style={{
+          x: springX,
+          y: springY,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+        animate={{
+          width: hovered ? 48 : 24,
+          height: hovered ? 48 : 24,
+          opacity: hovered ? 0.8 : 0.4,
+        }}
         transition={{ duration: 0.2 }}
       />
     </>
@@ -225,13 +253,31 @@ function CustomCursor() {
 }
 
 // ─── Parallax image ───────────────────────────────────────────
-function ParallaxImage({ src, alt, speed = 0.3 }: { src: string; alt: string; speed?: number }) {
+function ParallaxImage({
+  src,
+  alt,
+  speed = 0.3,
+}: {
+  src: string;
+  alt: string;
+  speed?: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [`${-speed * 100}px`, `${speed * 100}px`]);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [`${-speed * 100}px`, `${speed * 100}px`],
+  );
   return (
     <div ref={ref} className="relative w-full h-full overflow-hidden">
-      <motion.div style={{ y }} className="absolute inset-[-15%] w-[130%] h-[130%]">
+      <motion.div
+        style={{ y }}
+        className="absolute inset-[-15%] w-[130%] h-[130%]"
+      >
         <Image src={src} alt={alt} fill className="object-cover" unoptimized />
       </motion.div>
     </div>
@@ -239,7 +285,15 @@ function ParallaxImage({ src, alt, speed = 0.3 }: { src: string; alt: string; sp
 }
 
 // ─── Reveal text ──────────────────────────────────────────────
-function RevealText({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+function RevealText({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
   return (
@@ -256,12 +310,25 @@ function RevealText({ children, delay = 0, className = "" }: { children: React.R
 }
 
 // ─── Fade-in ──────────────────────────────────────────────────
-function FadeIn({ children, delay = 0, direction = "up", className = "" }: {
-  children: React.ReactNode; delay?: number; direction?: "up" | "left" | "right" | "none"; className?: string;
+function FadeIn({
+  children,
+  delay = 0,
+  direction = "up",
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  direction?: "up" | "left" | "right" | "none";
+  className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-5% 0px" });
-  const dirMap = { up: { y: 40, x: 0 }, left: { y: 0, x: -40 }, right: { y: 0, x: 40 }, none: { y: 0, x: 0 } };
+  const dirMap = {
+    up: { y: 40, x: 0 },
+    left: { y: 0, x: -40 },
+    right: { y: 0, x: 40 },
+    none: { y: 0, x: 0 },
+  };
   return (
     <motion.div
       ref={ref}
@@ -293,11 +360,21 @@ function SectionDivider() {
 }
 
 // ─── Section header ───────────────────────────────────────────
-function SectionHeader({ eyebrow, title, description, align = "left" }: {
-  eyebrow: string; title: string; description?: string; align?: "left" | "center";
+function SectionHeader({
+  eyebrow,
+  title,
+  description,
+  align = "left",
+}: {
+  eyebrow: string;
+  title: string;
+  description?: string;
+  align?: "left" | "center";
 }) {
   return (
-    <div className={`mb-12 md:mb-16 max-w-2xl ${align === "center" ? "mx-auto text-center" : ""}`}>
+    <div
+      className={`mb-12 md:mb-16 max-w-2xl ${align === "center" ? "mx-auto text-center" : ""}`}
+    >
       <FadeIn delay={0}>
         <span className="section-eyebrow block mb-4">{eyebrow}</span>
       </FadeIn>
@@ -318,10 +395,13 @@ export default function HomePage() {
   useLenis();
 
   const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroBgY    = useTransform(heroScroll, [0, 1], ["0%", "30%"]);
+  const { scrollYProgress: heroScroll } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroBgY = useTransform(heroScroll, [0, 1], ["0%", "30%"]);
   const heroOpacity = useTransform(heroScroll, [0, 0.8], [1, 0]);
-  const heroScale  = useTransform(heroScroll, [0, 1], [1, 1.08]);
+  const heroScale = useTransform(heroScroll, [0, 1], [1, 1.08]);
 
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ["All", "Residential", "Commercial"];
@@ -335,13 +415,37 @@ export default function HomePage() {
         ref={heroRef}
         className="relative min-h-[calc(100vh-5rem)] flex flex-col justify-center overflow-hidden"
       >
-        <motion.div className="absolute inset-0 z-0" style={{ y: heroBgY, scale: heroScale }}>
-          <Image src={HERO_IMAGE} alt="Modern luxury villa at dusk" fill className="object-cover object-center" priority unoptimized />
+        <motion.div
+          className="absolute inset-0 z-0"
+          style={{ y: heroBgY, scale: heroScale }}
+        >
+          <Image
+            src={HERO_IMAGE}
+            alt="Modern luxury villa at dusk"
+            fill
+            className="object-cover object-center"
+            priority
+            unoptimized
+          />
           <div className="absolute inset-0 bg-black/50" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.05) 100%)" }} />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.05) 100%)",
+            }}
+          />
         </motion.div>
 
-        <div className="absolute inset-0 z-[1] opacity-[0.04] pointer-events-none" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")", backgroundRepeat: "repeat", backgroundSize: "128px" }} />
+        <div
+          className="absolute inset-0 z-[1] opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
+            backgroundRepeat: "repeat",
+            backgroundSize: "128px",
+          }}
+        />
 
         <motion.div
           style={{ opacity: heroOpacity }}
@@ -361,7 +465,11 @@ export default function HomePage() {
               className="font-display-xl text-display-xl text-on-surface drop-shadow-lg"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
-              transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                duration: 0.9,
+                delay: 0.4,
+                ease: [0.22, 1, 0.36, 1],
+              }}
             >
               Built For Those Who Think Bigger.
             </motion.h1>
@@ -373,11 +481,49 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
           >
-            Discover high-growth land opportunities positioned along Bangalore's emerging growth
-            corridors, selected through legal due diligence, infrastructure intelligence, and market
-            analysis.
+            We evaluate and curate Bangalore's most compelling land investment opportunities through legal
+            due diligence, infrastructure research, and market intelligence—so you can invest with greater
+            confidence.
           </motion.p>
         </motion.div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ── 1.5 WHY CRYSTAL STONE EXISTS ──────────────────── */}
+      <section className="py-24 md:py-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+        <FadeIn delay={0.1}>
+          <div className="glass-panel p-8 md:p-14 relative overflow-hidden border border-primary/20">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+            <span className="section-eyebrow block mb-4">
+              WHY CRYSTAL STONE EXISTS
+            </span>
+            <h3 className="font-display-lg text-2xl md:text-3xl text-on-surface mb-6 leading-snug max-w-3xl">
+              Crystal Stone was founded on a simple belief: investors deserve more than property listings.
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-on-surface-variant text-base leading-relaxed font-body-md">
+              <div>
+                <p className="mb-4">
+                  Every land investment deserves careful evaluation, legal due diligence, infrastructure research, and a disciplined understanding of long-term market fundamentals.
+                </p>
+                <p>
+                  Our role isn&apos;t to convince investors to buy. Our responsibility is to evaluate opportunities with rigor, present them with transparency, and help investors make informed decisions based on evidence rather than speculation.
+                </p>
+              </div>
+              <div className="flex flex-col justify-between border-t md:border-t-0 md:border-l border-primary/20 pt-6 md:pt-0 md:pl-8">
+                <p className="font-serif text-lg md:text-xl text-primary italic leading-relaxed">
+                  &ldquo;Because better research leads to better decisions—and better decisions build lasting wealth.&rdquo;
+                </p>
+                <div className="mt-6 flex items-center gap-3">
+                  <div className="w-10 h-px bg-primary" />
+                  <span className="text-xs uppercase tracking-widest text-on-surface font-semibold">
+                    The Crystal Stone Mandate
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
       </section>
 
       <SectionDivider />
@@ -403,7 +549,10 @@ export default function HomePage() {
               <FadeIn key={item.title} delay={i * 0.1} direction="up">
                 <motion.div
                   className="relative group border border-primary/15 bg-black/40 backdrop-blur-sm overflow-hidden cursor-default"
-                  whileHover={{ borderColor: "rgba(212,175,55,0.4)", backgroundColor: "rgba(212,175,55,0.03)" }}
+                  whileHover={{
+                    borderColor: "rgba(212,175,55,0.4)",
+                    backgroundColor: "rgba(212,175,55,0.03)",
+                  }}
                   transition={{ duration: 0.3 }}
                 >
                   <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-primary/50 pointer-events-none" />
@@ -417,7 +566,9 @@ export default function HomePage() {
 
                   <div className="relative z-10 p-7">
                     <div className="flex items-center gap-4 mb-5">
-                      <span className="text-[10px] text-primary/40 tracking-[0.25em] font-medium tabular-nums shrink-0">0{i + 1}</span>
+                      <span className="text-[10px] text-primary/40 tracking-[0.25em] font-medium tabular-nums shrink-0">
+                        0{i + 1}
+                      </span>
                       <motion.div
                         className="h-px bg-primary/20 flex-1"
                         initial={{ scaleX: 0 }}
@@ -428,14 +579,22 @@ export default function HomePage() {
                       />
                       <motion.div
                         className="w-10 h-10 border border-primary/25 flex items-center justify-center shrink-0"
-                        whileHover={{ borderColor: "var(--color-primary)", rotate: 6, scale: 1.08 }}
+                        whileHover={{
+                          borderColor: "var(--color-primary)",
+                          rotate: 6,
+                          scale: 1.08,
+                        }}
                         transition={{ duration: 0.25 }}
                       >
-                        <span className="material-symbols-outlined text-primary text-[18px]">{item.icon}</span>
+                        <span className="material-symbols-outlined text-primary text-[18px]">
+                          {item.icon}
+                        </span>
                       </motion.div>
                     </div>
 
-                    <h4 className="font-headline-lg text-lg text-on-surface mb-4 tracking-wide">{item.title}</h4>
+                    <h4 className="font-headline-lg text-lg text-on-surface mb-4 tracking-wide">
+                      {item.title}
+                    </h4>
                     <div className="w-8 h-px bg-primary/40 mb-4" />
 
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
@@ -466,15 +625,18 @@ export default function HomePage() {
         <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
           <SectionHeader
             eyebrow="WHY INVESTORS WORK WITH US"
-            title="Built Exclusively For Serious Land Investors"
-            description="Institutional-grade sourcing, underwriting, acquisition and management."
+            title="While Others Speculate, Our Investors Decide With Evidence."
+            description="Independent research, structured due diligence, and carefully evaluated land investment
+opportunities—helping investors make informed decisions with confidence."
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             {investorBenefits.map((item, i) => (
               <FadeIn key={item.title} delay={i * 0.1}>
                 <div className="glass-panel p-8 h-full">
-                  <span className="material-symbols-outlined text-primary text-4xl mb-6 block">{item.icon}</span>
+                  <span className="material-symbols-outlined text-primary text-4xl mb-6 block">
+                    {item.icon}
+                  </span>
                   <h3 className="text-xl mb-4">{item.title}</h3>
                   <p>{item.desc}</p>
                 </div>
@@ -500,14 +662,32 @@ export default function HomePage() {
             />
 
             <div className="relative z-10 px-10 py-8">
-              <ChartContainer config={chartConfig} className="w-full" style={{ height: 420 }}>
-                <RadarChart data={frameworkData} margin={{ top: 20, right: 40, bottom: 20, left: 40 }}>
-                  <PolarGrid stroke="rgba(212,175,55,0.12)" gridType="polygon" />
+              <ChartContainer
+                config={chartConfig}
+                className="w-full"
+                style={{ height: 420 }}
+              >
+                <RadarChart
+                  data={frameworkData}
+                  margin={{ top: 20, right: 40, bottom: 20, left: 40 }}
+                >
+                  <PolarGrid
+                    stroke="rgba(212,175,55,0.12)"
+                    gridType="polygon"
+                  />
                   <PolarAngleAxis
                     dataKey="metric"
-                    tick={{ fill: "rgba(212,175,55,0.7)", fontSize: 12, fontFamily: "inherit", letterSpacing: "0.08em" }}
+                    tick={{
+                      fill: "rgba(212,175,55,0.7)",
+                      fontSize: 12,
+                      fontFamily: "inherit",
+                      letterSpacing: "0.08em",
+                    }}
                   />
-                  <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent />}
+                  />
                   <Radar
                     dataKey="score"
                     fill="#D4AF37"
@@ -538,22 +718,38 @@ export default function HomePage() {
                       style={{ left: "50%", transform: "translateX(-50%)" }}
                     />
                     {IconComponent && (
-                      <motion.div className="mb-3 mt-1" whileHover={{ scale: 1.15, rotate: 5 }} transition={{ duration: 0.25 }}>
-                        <IconComponent size={18} strokeWidth={1.25} className="text-primary/60 group-hover:text-primary transition-colors duration-200" />
+                      <motion.div
+                        className="mb-3 mt-1"
+                        whileHover={{ scale: 1.15, rotate: 5 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        <IconComponent
+                          size={18}
+                          strokeWidth={1.25}
+                          className="text-primary/60 group-hover:text-primary transition-colors duration-200"
+                        />
                       </motion.div>
                     )}
-                    <p className="text-[9px] uppercase tracking-[0.3em] text-on-surface-variant mb-2 text-center">{item.metric}</p>
-                    <p className="text-primary text-2xl font-bold tabular-nums">{item.score}</p>
-                    <p className="text-on-surface-variant/40 text-[10px] mt-0.5">/100</p>
+                    <p className="text-[9px] uppercase tracking-[0.3em] text-on-surface-variant mb-2 text-center">
+                      {item.metric}
+                    </p>
+                    <p className="text-primary text-2xl font-bold">
+                      {item.rating}
+                    </p>
                   </motion.div>
                 );
               })}
             </div>
+
+            {/* Disclaimer beneath Investment Framework */}
+            <div className="mt-8 text-center px-4 max-w-3xl mx-auto">
+              <p className="text-on-surface-variant/60 text-xs italic leading-relaxed">
+                * Every opportunity is evaluated using Crystal Stone&apos;s internal due diligence framework. Investors should consider their own objectives and seek independent professional advice where appropriate.
+              </p>
+            </div>
           </div>
         </FadeIn>
       </section>
-
-      
 
       <SectionDivider />
 
@@ -569,7 +765,7 @@ export default function HomePage() {
         <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12 md:mb-16">
             <SectionHeader
-              eyebrow="Featured Properties"
+              eyebrow="Investment Opportunities"
               title="Featured Investment Opportunities"
               description="Curated properties representing the pinnacle of architectural design and investment potential."
             />
@@ -581,11 +777,20 @@ export default function HomePage() {
                   type="button"
                   onClick={() => setActiveTab(i)}
                   className="relative font-label-md text-xs uppercase tracking-widest pb-2 px-2 transition-colors"
-                  style={{ color: activeTab === i ? "var(--color-primary)" : "var(--color-on-surface-variant)" }}
+                  style={{
+                    color:
+                      activeTab === i
+                        ? "var(--color-primary)"
+                        : "var(--color-on-surface-variant)",
+                  }}
                 >
                   {tab}
                   {activeTab === i && (
-                    <motion.div layoutId="tab-underline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }} />
+                    <motion.div
+                      layoutId="tab-underline"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    />
                   )}
                 </button>
               ))}
@@ -603,7 +808,11 @@ export default function HomePage() {
                 location="Rajanukunte | North Bengaluru Growth Corridor"
                 statValue=""
                 compact
-                metrics={["25% ROI Potential", "₹40 Lakhs Onwards", "20 Mins to Airport"]}
+                metrics={[
+                  "25% ROI Potential",
+                  "₹40 Lakhs Onwards",
+                  "20 Mins to Airport",
+                ]}
                 index={0}
               />
             </AnimatePresence>
@@ -619,7 +828,11 @@ export default function HomePage() {
                 <motion.span
                   className="material-symbols-outlined text-[18px]"
                   animate={{ x: [0, 5, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1.4,
+                    ease: "easeInOut",
+                  }}
                 >
                   arrow_forward
                 </motion.span>
@@ -631,27 +844,28 @@ export default function HomePage() {
 
       <SectionDivider />
 
-     
-
       {/* ── 5. BANGALORE INVESTMENT THESIS (NEW) ─────────── */}
       <section className="py-24 md:py-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
           {/* Left */}
           <div className="order-2 md:order-1">
             <FadeIn delay={0}>
-              <span className="section-eyebrow block mb-4">Land Investment</span>
+              <span className="section-eyebrow block mb-4">
+                Land Investment
+              </span>
             </FadeIn>
             <div className="overflow-hidden mb-5">
               <RevealText delay={0.1}>
                 <h2 className="section-title">
-                  Build Wealth Through Bangalore's Growth Corridors
+                  Build Wealth Through Bangalore&apos;s Growth Corridors
                 </h2>
               </RevealText>
             </div>
             <FadeIn delay={0.2}>
               <p className="section-body mb-10 max-w-lg">
-                Access legally verified land opportunities selected through infrastructure
-                intelligence, market analysis, and investment due diligence.
+                Access legally verified land opportunities selected through
+                infrastructure intelligence, market analysis, and investment due
+                diligence.
               </p>
             </FadeIn>
 
@@ -682,13 +896,25 @@ export default function HomePage() {
                     <div className="absolute top-0 left-0 w-full h-px bg-primary/20" />
                     <div className="flex items-center gap-2.5">
                       <div className="w-10 h-10 border border-primary/15 flex items-center justify-center shrink-0">
-                        <metric.icon size={20} strokeWidth={1} className="text-primary/90" />
+                        <metric.icon
+                          size={20}
+                          strokeWidth={1}
+                          className="text-primary/90"
+                        />
                       </div>
-                      <p className="text-[9px] uppercase tracking-[0.3em] text-on-surface-variant">{metric.label}</p>
+                      <p className="text-[9px] uppercase tracking-[0.3em] text-on-surface-variant">
+                        {metric.label}
+                      </p>
                     </div>
-                    <p className="text-primary text-2xl font-bold tabular-nums">{metric.value}</p>
-                    <p className="text-on-surface-variant text-xs leading-relaxed">{metric.sub}</p>
-                    <span className="absolute top-3 right-4 text-[10px] text-primary/20 tracking-[0.2em] tabular-nums">0{i + 1}</span>
+                    <p className="text-primary text-2xl font-bold tabular-nums">
+                      {metric.value}
+                    </p>
+                    <p className="text-on-surface-variant text-xs leading-relaxed">
+                      {metric.sub}
+                    </p>
+                    <span className="absolute top-3 right-4 text-[10px] text-primary/20 tracking-[0.2em] tabular-nums">
+                      0{i + 1}
+                    </span>
                   </div>
                 </FadeIn>
               ))}
@@ -699,7 +925,12 @@ export default function HomePage() {
                 href="/properties"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-label-md uppercase tracking-widest luxury-button overflow-hidden relative group"
               >
-                <motion.span className="absolute inset-0 bg-white/10" initial={{ x: "-100%" }} whileHover={{ x: "100%" }} transition={{ duration: 0.5 }} />
+                <motion.span
+                  className="absolute inset-0 bg-white/10"
+                  initial={{ x: "-100%" }}
+                  whileHover={{ x: "100%" }}
+                  transition={{ duration: 0.5 }}
+                />
                 Explore Investment Opportunities
                 <ArrowRight size={16} strokeWidth={1.5} />
               </Link>
@@ -707,7 +938,11 @@ export default function HomePage() {
           </div>
 
           {/* Right — parallax image */}
-          <FadeIn delay={0.15} direction="right" className="order-1 md:order-2 relative h-[480px] md:h-[600px] w-full">
+          <FadeIn
+            delay={0.15}
+            direction="right"
+            className="order-1 md:order-2 relative h-[480px] md:h-[600px] w-full"
+          >
             <div className="absolute inset-0 border border-primary/20 translate-x-3 translate-y-3 pointer-events-none" />
             <motion.div
               className="w-full h-full overflow-hidden"
@@ -728,8 +963,12 @@ export default function HomePage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <p className="font-label-md text-primary uppercase tracking-widest text-xs mb-1">AUM</p>
-              <p className="font-display-lg text-headline-lg-mobile text-on-surface">$2.4B+</p>
+              <p className="font-label-md text-primary uppercase tracking-widest text-xs mb-1">
+                AUM
+              </p>
+              <p className="font-display-lg text-headline-lg-mobile text-on-surface">
+                $2.4B+
+              </p>
             </motion.div>
           </FadeIn>
         </div>
@@ -743,11 +982,16 @@ export default function HomePage() {
             whileHover={{ borderColor: "rgba(var(--color-primary-rgb), 0.3)" }}
             data-cursor-expand
           >
-            <span className="material-symbols-outlined text-primary text-4xl mb-6 inline-block">diamond</span>
-            <h3 className="font-headline-lg text-2xl text-on-surface mb-4">Off-Market Exclusives</h3>
+            <span className="material-symbols-outlined text-primary text-4xl mb-6 inline-block">
+              diamond
+            </span>
+            <h3 className="font-headline-lg text-2xl text-on-surface mb-4">
+              Off-Market Exclusives
+            </h3>
             <p className="section-body mb-8 max-w-lg">
-              Our most coveted assets are never publicly listed. Access our private vault of
-              opportunities available strictly to registered investors.
+              Our most coveted assets are never publicly listed. Access our
+              private vault of opportunities available strictly to registered
+              investors.
             </p>
             <MagneticWrapper>
               <Link
@@ -758,7 +1002,11 @@ export default function HomePage() {
                 <motion.span
                   className="material-symbols-outlined text-sm"
                   animate={{ x: [0, 4, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1.5,
+                    ease: "easeInOut",
+                  }}
                 >
                   lock_open
                 </motion.span>
@@ -777,42 +1025,65 @@ export default function HomePage() {
             key={i}
             className="absolute left-1/2 top-1/2 rounded-full border border-primary/10 pointer-events-none"
             style={{ translateX: "-50%", translateY: "-50%" }}
-            animate={{ scale: [0.8 + i * 0.2, 1.4 + i * 0.2], opacity: [0.4, 0] }}
-            transition={{ repeat: Infinity, duration: 3 + i, delay: i * 1, ease: "easeOut" }}
+            animate={{
+              scale: [0.8 + i * 0.2, 1.4 + i * 0.2],
+              opacity: [0.4, 0],
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: 3 + i,
+              delay: i * 1,
+              ease: "easeOut",
+            }}
             initial={{ width: 200, height: 200 }}
           />
         ))}
 
         <div className="max-w-container-max mx-auto relative z-10">
           <RevealText>
-            <h2 className="section-title mb-6">Ready to Start Your Investment Journey?</h2>
+            <h2 className="section-title mb-6">
+              Let&apos;s Evaluate Your Investment Goals
+            </h2>
           </RevealText>
           <FadeIn delay={0.15}>
             <p className="section-body max-w-xl mx-auto mb-10">
-              Engage with our senior advisory team to discuss your portfolio strategy in strict confidence.
+              Schedule a confidential consultation to discuss your objectives, investment horizon, and suitable opportunities.
             </p>
           </FadeIn>
           <FadeIn delay={0.25}>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <MagneticWrapper>
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
                   <Link
                     href="/about#contact"
                     className="inline-flex justify-center items-center bg-primary text-on-primary font-label-md uppercase tracking-widest px-8 py-4 luxury-button relative overflow-hidden group"
                   >
-                    <motion.span className="absolute inset-0 bg-white/10" initial={{ x: "-100%" }} whileHover={{ x: "100%" }} transition={{ duration: 0.5 }} />
+                    <motion.span
+                      className="absolute inset-0 bg-white/10"
+                      initial={{ x: "-100%" }}
+                      whileHover={{ x: "100%" }}
+                      transition={{ duration: 0.5 }}
+                    />
                     Book Free Consultation
                   </Link>
                 </motion.div>
               </MagneticWrapper>
 
               <MagneticWrapper>
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
                   <Link
                     href="#"
                     className="inline-flex justify-center items-center border border-primary text-primary font-label-md uppercase tracking-widest px-8 py-4 hover:bg-primary/10 transition-colors"
                   >
-                    <span className="material-symbols-outlined mr-2 text-[18px]">lock</span>
+                    <span className="material-symbols-outlined mr-2 text-[18px]">
+                      lock
+                    </span>
                     WhatsApp Us
                   </Link>
                 </motion.div>
@@ -856,7 +1127,13 @@ function PropertyCard({
           animate={{ scale: hovered ? 1.06 : 1 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Image src={image} alt={title} fill className="object-cover" unoptimized />
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover"
+            unoptimized
+          />
         </motion.div>
 
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
@@ -873,18 +1150,30 @@ function PropertyCard({
           )}
         </AnimatePresence>
 
-        <div className={`absolute bottom-0 left-0 w-full z-10 flex justify-between items-end ${compact ? "p-6" : "p-8"}`}>
+        <div
+          className={`absolute bottom-0 left-0 w-full z-10 flex justify-between items-end ${compact ? "p-6" : "p-8"}`}
+        >
           <div>
             <motion.span
               className="inline-block px-3 py-1 border border-primary/40 text-primary font-label-md text-[10px] uppercase tracking-widest mb-3"
-              animate={{ borderColor: hovered ? "var(--color-primary)" : "rgba(var(--color-primary-rgb), 0.4)" }}
+              animate={{
+                borderColor: hovered
+                  ? "var(--color-primary)"
+                  : "rgba(var(--color-primary-rgb), 0.4)",
+              }}
             >
               {badge}
             </motion.span>
-            <h3 className={`font-headline-lg text-on-surface mb-2 ${compact ? "text-xl" : "text-2xl"}`}>{title}</h3>
+            <h3
+              className={`font-headline-lg text-on-surface mb-2 ${compact ? "text-xl" : "text-2xl"}`}
+            >
+              {title}
+            </h3>
             <div className="flex items-center gap-3 text-on-surface-variant text-sm">
               <span className="flex items-center gap-1">
-                <span className="material-symbols-outlined text-[14px]">location_on</span>
+                <span className="material-symbols-outlined text-[14px]">
+                  location_on
+                </span>
                 {location}
               </span>
               {meta && (
@@ -915,9 +1204,15 @@ function PropertyCard({
             ) : (
               <>
                 {statLabel && (
-                  <p className="font-label-md text-primary/80 uppercase tracking-widest text-[10px] mb-1">{statLabel}</p>
+                  <p className="font-label-md text-primary/80 uppercase tracking-widest text-[10px] mb-1">
+                    {statLabel}
+                  </p>
                 )}
-                <p className={`font-headline-lg text-primary ${compact ? "text-lg" : "text-2xl"}`}>{statValue}</p>
+                <p
+                  className={`font-headline-lg text-primary ${compact ? "text-lg" : "text-2xl"}`}
+                >
+                  {statValue}
+                </p>
               </>
             )}
           </div>

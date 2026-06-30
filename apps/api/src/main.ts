@@ -1,3 +1,4 @@
+import './config/load-env';
 import type { NextFunction, Request, Response } from 'express';
 import { NestFactory } from '@nestjs/core';
 import { toNodeHandler } from 'better-auth/node';

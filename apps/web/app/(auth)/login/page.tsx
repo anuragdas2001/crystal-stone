@@ -8,7 +8,7 @@ import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Label } from "@repo/ui/label";
-import { authClient } from "../../../lib/auth-client";
+import { useAppStore } from "../../../store/use-app-store";
 
 const FEATURES = [
   "Verified Properties",
@@ -22,46 +22,30 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const authError = useAppStore((state) => state.authError);
+  const authOperation = useAppStore((state) => state.authOperation);
+  const signInWithEmail = useAppStore((state) => state.signInWithEmail);
+  const continueWithGoogle = useAppStore((state) => state.continueWithGoogle);
+  const clearAuthError = useAppStore((state) => state.clearAuthError);
+  const isSubmitting = authOperation === "sign-in";
+  const isGoogleLoading = authOperation === "google";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
-    setIsSubmitting(true);
-
-    const { error } = await authClient.signIn.email({
+    const result = await signInWithEmail({
       email,
       password,
-      callbackURL: "/",
+      callbackURL: "/dashboard",
     });
 
-    setIsSubmitting(false);
-
-    if (error) {
-      setError(error.message ?? "Unable to sign in.");
-      return;
+    if (result.ok) {
+      router.push("/");
+      router.refresh();
     }
-
-    router.push("/");
-    router.refresh();
   }
 
   async function handleGoogleSignIn() {
-    setError("");
-    setIsGoogleLoading(true);
-
-    const { error } = await authClient.signIn.social({
-      provider: "google",
-      callbackURL: "/",
-    });
-
-    setIsGoogleLoading(false);
-
-    if (error) {
-      setError(error.message ?? "Unable to continue with Google.");
-    }
+    await continueWithGoogle("/dashboard");
   }
 
   return (
@@ -150,7 +134,10 @@ export default function LoginPage() {
                   type="email"
                   autoComplete="email"
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) => {
+                    clearAuthError();
+                    setEmail(event.target.value);
+                  }}
                   required
                   className="h-14 flex-1 border-0 bg-transparent px-0 shadow-none font-body-md text-on-surface placeholder:text-outline focus-visible:ring-0 focus-visible:ring-offset-0"
                   placeholder="john@example.com"
@@ -172,7 +159,10 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   value={password}
-                  onChange={(event) => setPassword(event.target.value)}
+                  onChange={(event) => {
+                    clearAuthError();
+                    setPassword(event.target.value);
+                  }}
                   required
                   className="h-14 flex-1 border-0 bg-transparent px-0 shadow-none font-body-md text-on-surface placeholder:text-outline focus-visible:ring-0 focus-visible:ring-offset-0"
                   placeholder="••••••••"
@@ -200,9 +190,9 @@ export default function LoginPage() {
               </Button>
             </div>
 
-            {error ? (
+            {authError ? (
               <p className="font-body-md text-sm text-red-400" role="alert">
-                {error}
+                {authError}
               </p>
             ) : null}
 

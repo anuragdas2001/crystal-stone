@@ -1,5 +1,7 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import type { Metadata } from "next";
 import { Libre_Caslon_Text, Manrope } from "next/font/google";
+import { AuthSessionProvider } from "../providers/auth-session-provider";
 import "./globals.css";
 
 const libreCaslon = Libre_Caslon_Text({
@@ -28,14 +30,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${libreCaslon.variable} ${manrope.variable}`}>
+    <html
+      lang="en"
+      className={`dark ${libreCaslon.variable} ${manrope.variable}`}
+    >
       <head>
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0..1,0&display=swap"
         />
       </head>
-      <body className="flex min-h-screen flex-col">{children}</body>
+      <body className="flex min-h-screen flex-col">
+        <AuthSessionProvider>{children}</AuthSessionProvider>
+      </body>
     </html>
   );
 }

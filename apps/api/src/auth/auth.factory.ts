@@ -20,7 +20,10 @@ export function createAuth(prisma: PrismaClient) {
       defaultCookieAttributes: {
         sameSite: "none",   // REQUIRED — cross-domain cookies are blocked by "lax" (default)
         secure: true,        // REQUIRED when sameSite is "none"
-        partitioned: true,   // needed for Chrome's CHIPS / third-party cookie changes
+        // partitioned: true,   // needed for Chrome's CHIPS / third-party cookie changes
+      },
+      ipAddress: {
+        ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for"],
       },
     },
     account: {

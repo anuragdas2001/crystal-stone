@@ -179,14 +179,14 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
     // Build absolute URL so Better Auth redirects to the frontend, not the API
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const absoluteCallbackURL = callbackURL.startsWith("http")
-      ? callbackURL
-      : `${origin}${callbackURL}`;
+    // const absoluteCallbackURL = callbackURL.startsWith("http")
+    //   ? callbackURL
+    //   : `${origin}${callbackURL}`;
 
     try {
       const { error } = await authClient.signIn.social({
         provider: "google",
-        callbackURL: absoluteCallbackURL,
+        callbackURL: `${window.location.origin}/dashboard`,
       });
 
       if (error) {

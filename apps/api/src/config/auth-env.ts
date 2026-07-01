@@ -48,9 +48,9 @@ export function getAuthEnv(): AuthEnv {
   const port = parsePort(process.env.PORT);
   const apiBaseUrl = normalizeOrigin(
     process.env.BETTER_AUTH_URL ??
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : `http://localhost:${port}`),
+    (process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : `http://localhost:${port}`),
   );
   const webOrigin = normalizeOrigin(
     process.env.WEB_ORIGIN ?? DEFAULT_WEB_ORIGIN,
@@ -76,17 +76,15 @@ export function getAuthEnv(): AuthEnv {
     trustedOrigins: Array.from(
       new Set([
         webOrigin,
-        'https://*.vercel.app',
-        'http://localhost:*',
         ...splitOrigins(process.env.BETTER_AUTH_TRUSTED_ORIGINS),
       ]),
     ),
     google:
       googleClientId && googleClientSecret
         ? {
-            clientId: googleClientId,
-            clientSecret: googleClientSecret,
-          }
+          clientId: googleClientId,
+          clientSecret: googleClientSecret,
+        }
         : undefined,
   };
 }

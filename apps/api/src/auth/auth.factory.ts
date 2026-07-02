@@ -1,7 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { phoneNumber } from 'better-auth/plugins';
 import { getAuthEnv } from '../config/auth-env';
+import { sendSmsOtp } from './sms.service';
 
 export function createAuth(prisma: PrismaClient) {
   const env = getAuthEnv();
@@ -15,6 +17,12 @@ export function createAuth(prisma: PrismaClient) {
     database: prismaAdapter(prisma, {
       provider: "postgresql",
     }),
+    user: {
+      additionalFields: {
+        firstName: { type: "string", required: false },
+        lastName: { type: "string", required: false },
+      },
+    },
     advanced: {
       useSecureCookies: true,
       defaultCookieAttributes: {
@@ -29,23 +37,70 @@ export function createAuth(prisma: PrismaClient) {
     account: {
       accountLinking: {
         enabled: true,
-        trustedProviders: ["google"],
+        trustedProviders: ["google", "linkedin"],
       },
     },
 
     emailAndPassword: {
-      enabled: true,
-      minPasswordLength: 6,
-      requireEmailVerification: false,
+      enabled: false,
     },
 
-    socialProviders: env.google
-      ? {
-        google: {
-          ...env.google,
-          prompt: "select_account",
+    socialProviders:
+      env.google || env.linkedin
+        ? {
+          ...(env.google && {
+            google: {
+              ...env.google,
+              prompt: "select_account",
+            },
+          }),
+          ...(env.linkedin && {
+            linkedin: {
+              ...env.linkedin,
+            },
+          }),
+        }
+        : undefined,
+
+    plugins: [
+      phoneNumber({
+        otpLength: 6,
+        sendOTP: async ({ phoneNumber, code }) => {
+          await sendSmsOtp(phoneNumber, code);
         },
-      }
-      : undefined,
+        signUpOnVerification: {
+          getTempEmail: (phone) =>
+            `${phone.replace(/[^0-9]/g, '')}@temp.crystalstone.portal`,
+        },
+        callbackOnVerification: async ({ user }, ctx) => {
+          if (ctx && ctx.body) {
+            const body = ctx.body as Record<string, any>;
+            const { firstName, lastName, email } = body;
+            const updates: Record<string, any> = {};
+            if (firstName !== undefined) updates.firstName = firstName;
+            if (lastName !== undefined) updates.lastName = lastName;
+            if (firstName || lastName) {
+              const u = user as any;
+              updates.name = [
+                firstName || u.firstName,
+                lastName || u.lastName,
+              ]
+                .filter(Boolean)
+                .join(' ');
+            }
+            if (email && typeof email === 'string' && email.includes('@')) {
+              updates.email = email;
+            }
+
+            if (Object.keys(updates).length > 0) {
+              await ctx?.context?.internalAdapter?.updateUser(
+                user.id,
+                updates,
+              );
+            }
+          }
+        },
+      }),
+    ],
   });
 }

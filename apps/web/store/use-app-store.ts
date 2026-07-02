@@ -6,21 +6,24 @@ type AuthUser = AuthSessionPayload["user"];
 type AuthSession = AuthSessionPayload["session"];
 
 type AuthStatus = "idle" | "loading" | "authenticated" | "unauthenticated";
-type AuthOperation = "session" | "sign-in" | "sign-up" | "google" | "sign-out";
+type AuthOperation = "session" | "send-otp" | "verify-otp" | "google" | "linkedin" | "sign-out";
 
 type AuthResult = {
   ok: boolean;
   error?: string;
 };
 
-type EmailSignInInput = {
-  email: string;
-  password: string;
-  callbackURL?: string;
+type PhoneSignInInput = {
+  phoneNumber: string;
+  code: string;
 };
 
-type EmailSignUpInput = EmailSignInInput & {
-  name: string;
+type PhoneSignUpInput = {
+  phoneNumber: string;
+  code: string;
+  firstName: string;
+  lastName: string;
+  email?: string;
 };
 
 type AuthState = {
@@ -34,9 +37,11 @@ type AuthState = {
 type AuthActions = {
   clearAuthError: () => void;
   loadAuthSession: () => Promise<AuthResult>;
-  signInWithEmail: (input: EmailSignInInput) => Promise<AuthResult>;
-  signUpWithEmail: (input: EmailSignUpInput) => Promise<AuthResult>;
+  sendPhoneOtp: (phoneNumber: string) => Promise<AuthResult>;
+  verifyPhoneSignIn: (input: PhoneSignInInput) => Promise<AuthResult>;
+  verifyPhoneSignUp: (input: PhoneSignUpInput) => Promise<AuthResult>;
   continueWithGoogle: (callbackURL?: string) => Promise<AuthResult>;
+  continueWithLinkedIn: (callbackURL?: string) => Promise<AuthResult>;
   signOut: () => Promise<AuthResult>;
 };
 
@@ -118,18 +123,92 @@ export const useAppStore = create<AppStore>((set, get) => ({
     }
   },
 
-  signInWithEmail: async ({ email, password, callbackURL = "/" }) => {
-    set({ authOperation: "sign-in", authError: null });
+  sendPhoneOtp: async (phoneNumber) => {
+    set({ authOperation: "send-otp", authError: null });
 
     try {
-      const { error } = await authClient.signIn.email({
-        email,
-        password,
-        callbackURL,
+      // 1. Attempt Firebase Phone Authentication SMS delivery if recaptcha container exists
+      if (typeof window !== "undefined" && document.getElementById("recaptcha-container")) {
+        try {
+          const { signInWithPhoneNumber, RecaptchaVerifier } = await import("firebase/auth");
+          const { firebaseAuth } = await import("../lib/firebase");
+          
+          if (!(window as any).recaptchaVerifier) {
+            (window as any).recaptchaVerifier = new RecaptchaVerifier(
+              firebaseAuth,
+              "recaptcha-container",
+              {
+                size: "invisible",
+              }
+            );
+          }
+
+          const confirmationResult = await signInWithPhoneNumber(
+            firebaseAuth,
+            phoneNumber,
+            (window as any).recaptchaVerifier
+          );
+          (window as any).firebaseConfirmationResult = confirmationResult;
+        } catch (fbErr: any) {
+          console.warn("Firebase Phone Auth fallback to server OTP:", fbErr.message || fbErr);
+          try {
+            if ((window as any).recaptchaVerifier) {
+              (window as any).recaptchaVerifier.clear();
+            }
+          } catch (clearErr) {}
+          (window as any).recaptchaVerifier = null;
+        }
+      }
+
+      // 2. Also trigger Better Auth server OTP endpoint for backend session readiness
+      const { error } = await authClient.phoneNumber.sendOtp({
+        phoneNumber,
       });
 
       if (error) {
-        const message = getErrorMessage(error, "Unable to sign in.");
+        const message = getErrorMessage(
+          error,
+          "Unable to send verification code."
+        );
+
+        set({ authOperation: null, authError: message });
+        return { ok: false, error: message };
+      }
+
+      set({ authOperation: null });
+      return { ok: true };
+    } catch (error) {
+      const message = getErrorMessage(
+        error,
+        "Unable to send verification code."
+      );
+
+      set({ authOperation: null, authError: message });
+      return { ok: false, error: message };
+    }
+  },
+
+  verifyPhoneSignIn: async ({ phoneNumber, code }) => {
+    set({ authOperation: "verify-otp", authError: null });
+
+    try {
+      // 1. If Firebase confirmation result is active, confirm the code with Firebase first
+      if (typeof window !== "undefined" && (window as any).firebaseConfirmationResult) {
+        try {
+          await (window as any).firebaseConfirmationResult.confirm(code);
+        } catch (fbErr: any) {
+          console.warn("Firebase code confirmation notice:", fbErr.message || fbErr);
+        }
+      }
+
+      // 2. Verify with backend Better Auth to establish PostgreSQL user session
+      const { error } = await authClient.phoneNumber.verify({
+        phoneNumber,
+        code,
+      });
+
+      if (error) {
+        const message = getErrorMessage(error, "Invalid verification code.");
 
         set({ authOperation: null, authError: message });
         return { ok: false, error: message };
@@ -137,28 +216,46 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
       return get().loadAuthSession();
     } catch (error) {
-      const message = getErrorMessage(error, "Unable to sign in.");
+      const message = getErrorMessage(error, "Invalid verification code.");
 
       set({ authOperation: null, authError: message });
       return { ok: false, error: message };
     }
   },
 
-  signUpWithEmail: async ({ name, email, password, callbackURL = "/" }) => {
-    set({ authOperation: "sign-up", authError: null });
+  verifyPhoneSignUp: async ({
+    phoneNumber,
+    code,
+    firstName,
+    lastName,
+    email,
+  }) => {
+    set({ authOperation: "verify-otp", authError: null });
 
     try {
-      const { error } = await authClient.signUp.email({
-        name,
-        email,
-        password,
-        callbackURL,
-      });
+      // 1. If Firebase confirmation result is active, confirm with Firebase first
+      if (typeof window !== "undefined" && (window as any).firebaseConfirmationResult) {
+        try {
+          await (window as any).firebaseConfirmationResult.confirm(code);
+        } catch (fbErr: any) {
+          console.warn("Firebase code confirmation notice:", fbErr.message || fbErr);
+        }
+      }
+
+      // 2. Verify with backend Better Auth to create PostgreSQL user record and session
+      const { error } = await authClient.phoneNumber.verify({
+        phoneNumber,
+        code,
+        firstName,
+        lastName,
+        name: [firstName, lastName].filter(Boolean).join(" "),
+        ...(email && email.trim() ? { email: email.trim() } : {}),
+      } as any);
 
       if (error) {
         const message = getErrorMessage(
           error,
-          "Unable to create your account.",
+          "Unable to verify and create account."
         );
 
         set({ authOperation: null, authError: message });
@@ -167,7 +264,10 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
       return get().loadAuthSession();
     } catch (error) {
-      const message = getErrorMessage(error, "Unable to create your account.");
+      const message = getErrorMessage(
+        error,
+        "Unable to verify and create account."
+      );
 
       set({ authOperation: null, authError: message });
       return { ok: false, error: message };
@@ -203,6 +303,35 @@ export const useAppStore = create<AppStore>((set, get) => ({
       return { ok: true };
     } catch (error) {
       const message = getErrorMessage(error, "Unable to continue with Google.");
+
+      set({ authOperation: null, authError: message });
+      return { ok: false, error: message };
+    }
+  },
+
+  continueWithLinkedIn: async (callbackURL = "/dashboard") => {
+    set({ authOperation: "linkedin", authError: null });
+
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: "linkedin",
+        callbackURL: `${window.location.origin}/dashboard`,
+      });
+
+      if (error) {
+        const message = getErrorMessage(
+          error,
+          "Unable to continue with LinkedIn.",
+        );
+
+        set({ authOperation: null, authError: message });
+        return { ok: false, error: message };
+      }
+
+      set({ authOperation: null });
+      return { ok: true };
+    } catch (error) {
+      const message = getErrorMessage(error, "Unable to continue with LinkedIn.");
 
       set({ authOperation: null, authError: message });
       return { ok: false, error: message };

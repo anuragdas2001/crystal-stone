@@ -7,6 +7,10 @@ export type AuthEnv = {
     clientId: string;
     clientSecret: string;
   };
+  linkedin?: {
+    clientId: string;
+    clientSecret: string;
+  };
 };
 
 const DEFAULT_API_PORT = 3001;
@@ -58,6 +62,9 @@ export function getAuthEnv(): AuthEnv {
   const secret = process.env.BETTER_AUTH_SECRET ?? DEV_AUTH_SECRET;
   const googleClientId = process.env.GOOGLE_CLIENT_ID;
   const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  // Note: Restart the API dev server after updating credentials in .env
+  const linkedinClientId = process.env.LINKEDIN_CLIENT_ID;
+  const linkedinClientSecret = process.env.LINKEDIN_CLIENT_SECRET;
 
   if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
     console.warn('WARNING: DATABASE_URL is not set.');
@@ -66,6 +73,12 @@ export function getAuthEnv(): AuthEnv {
   if (Boolean(googleClientId) !== Boolean(googleClientSecret)) {
     console.warn(
       'WARNING: GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET should be configured together.',
+    );
+  }
+
+  if (Boolean(linkedinClientId) !== Boolean(linkedinClientSecret)) {
+    console.warn(
+      'WARNING: LINKEDIN_CLIENT_ID and LINKEDIN_CLIENT_SECRET should be configured together.',
     );
   }
 
@@ -84,6 +97,13 @@ export function getAuthEnv(): AuthEnv {
         ? {
           clientId: googleClientId,
           clientSecret: googleClientSecret,
+        }
+        : undefined,
+    linkedin:
+      linkedinClientId && linkedinClientSecret
+        ? {
+          clientId: linkedinClientId,
+          clientSecret: linkedinClientSecret,
         }
         : undefined,
   };

@@ -22,14 +22,20 @@ import {
 } from "@repo/ui/chart";
 import {
   ArrowRight,
+  ArrowUpRight,
   Building2,
+  Calendar,
   Clock,
   IndianRupee,
   Landmark,
   Layers,
+  MapPin,
   Scale,
   ShieldCheck,
+  Target,
   TrendingUp,
+  User,
+  Users,
 } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────
@@ -797,24 +803,9 @@ opportunities—helping investors make informed decisions with confidence."
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter auto-rows-[minmax(320px,400px)]">
+          <div className="w-full">
             <AnimatePresence mode="wait">
-              <PropertyCard
-                key="main-card"
-                className="md:col-span-12"
-                image="/Rajanukunte_Premium_Layout.png"
-                badge="Residential Land"
-                title="Airport Growth Belt"
-                location="Rajanukunte | North Bengaluru Growth Corridor"
-                statValue=""
-                compact
-                metrics={[
-                  "25% ROI Potential",
-                  "₹40 Lakhs Onwards",
-                  "20 Mins to Airport",
-                ]}
-                index={0}
-              />
+              <FeaturedOpportunityLayout key="main-featured-layout" />
             </AnimatePresence>
           </div>
 
@@ -844,136 +835,7 @@ opportunities—helping investors make informed decisions with confidence."
 
       <SectionDivider />
 
-      {/* ── 5. BANGALORE INVESTMENT THESIS (NEW) ─────────── */}
-      <section className="py-24 md:py-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
-          {/* Left */}
-          <div className="order-2 md:order-1">
-            <FadeIn delay={0}>
-              <span className="section-eyebrow block mb-4">
-                Land Investment
-              </span>
-            </FadeIn>
-            <div className="overflow-hidden mb-5">
-              <RevealText delay={0.1}>
-                <h2 className="section-title">
-                  Build Wealth Through Bangalore&apos;s Growth Corridors
-                </h2>
-              </RevealText>
-            </div>
-            <FadeIn delay={0.2}>
-              <p className="section-body mb-10 max-w-lg">
-                Access legally verified land opportunities selected through
-                infrastructure intelligence, market analysis, and investment due
-                diligence.
-              </p>
-            </FadeIn>
-
-            {/* Metric blocks */}
-            <div className="grid grid-cols-3 border border-primary/10 mb-10 overflow-hidden">
-              {[
-                {
-                  icon: IndianRupee,
-                  label: "Entry Investment",
-                  value: "₹40 Lakhs+",
-                  sub: "Accessible opportunities across Bangalore's emerging growth corridors.",
-                },
-                {
-                  icon: Clock,
-                  label: "Investment Horizon",
-                  value: "3–7 Years",
-                  sub: "Designed for long-term capital appreciation.",
-                },
-                {
-                  icon: Layers,
-                  label: "Asset Classes",
-                  value: "3",
-                  sub: "Residential Layouts, Commercial Land, Development Land.",
-                },
-              ].map((metric, i) => (
-                <FadeIn key={metric.label} delay={0.25 + i * 0.08}>
-                  <div className="relative flex flex-col gap-3 px-6 py-6 bg-black border-r border-primary/10 last:border-r-0 h-full">
-                    <div className="absolute top-0 left-0 w-full h-px bg-primary/20" />
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 border border-primary/15 flex items-center justify-center shrink-0">
-                        <metric.icon
-                          size={20}
-                          strokeWidth={1}
-                          className="text-primary/90"
-                        />
-                      </div>
-                      <p className="text-[9px] uppercase tracking-[0.3em] text-on-surface-variant">
-                        {metric.label}
-                      </p>
-                    </div>
-                    <p className="text-primary text-2xl font-bold tabular-nums">
-                      {metric.value}
-                    </p>
-                    <p className="text-on-surface-variant text-xs leading-relaxed">
-                      {metric.sub}
-                    </p>
-                    <span className="absolute top-3 right-4 text-[10px] text-primary/20 tracking-[0.2em] tabular-nums">
-                      0{i + 1}
-                    </span>
-                  </div>
-                </FadeIn>
-              ))}
-            </div>
-
-            <MagneticWrapper>
-              <Link
-                href="/properties"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-label-md uppercase tracking-widest luxury-button overflow-hidden relative group"
-              >
-                <motion.span
-                  className="absolute inset-0 bg-white/10"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "100%" }}
-                  transition={{ duration: 0.5 }}
-                />
-                Explore Investment Opportunities
-                <ArrowRight size={16} strokeWidth={1.5} />
-              </Link>
-            </MagneticWrapper>
-          </div>
-
-          {/* Right — parallax image */}
-          <FadeIn
-            delay={0.15}
-            direction="right"
-            className="order-1 md:order-2 relative h-[480px] md:h-[600px] w-full"
-          >
-            <div className="absolute inset-0 border border-primary/20 translate-x-3 translate-y-3 pointer-events-none" />
-            <motion.div
-              className="w-full h-full overflow-hidden"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              data-cursor-expand
-            >
-              <ParallaxImage
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBogkD5T6UIdzpwCN4XuZv7oG-sz0yfL-hcNYCGJgSPpH1fREz60dtUFV3GXuShqY9zBob7Bejsd0OqxYWuquc85Ojl9fjySZrDZzvT5eyuNvjMpwDXNcV7rFKfbJfTur8sEDodBoZ5bm_9O502ebEBkMDYlXASIk5gUuG1cWaN9cZK9UnHjMQhLKIYESBkcKxOLJATRY8HKeCiireKGXFCgYHlaGiG_s5u3-wR4oilG5olK-cGRAAlEVdeFzWLQglz9E-1XU42vHQ"
-                alt="Bangalore growth corridor"
-                speed={0.2}
-              />
-            </motion.div>
-            <motion.div
-              className="absolute bottom-8 left-0 glass-panel p-6 hidden md:block"
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <p className="font-label-md text-primary uppercase tracking-widest text-xs mb-1">
-                AUM
-              </p>
-              <p className="font-display-lg text-headline-lg-mobile text-on-surface">
-                $2.4B+
-              </p>
-            </motion.div>
-          </FadeIn>
-        </div>
-      </section>
-      <SectionDivider />
+  
       {/* ── 7. OFF-MARKET EXCLUSIVES ──────────────────────── */}
       <section className="py-24 md:py-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
         <FadeIn delay={0.1}>
@@ -1077,7 +939,7 @@ opportunities—helping investors make informed decisions with confidence."
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  <Link
+                  {/* <Link
                     href="#"
                     className="inline-flex justify-center items-center border border-primary text-primary font-label-md uppercase tracking-widest px-8 py-4 hover:bg-primary/10 transition-colors"
                   >
@@ -1085,7 +947,7 @@ opportunities—helping investors make informed decisions with confidence."
                       lock
                     </span>
                     WhatsApp Us
-                  </Link>
+                  </Link> */}
                 </motion.div>
               </MagneticWrapper>
             </div>
@@ -1093,6 +955,252 @@ opportunities—helping investors make informed decisions with confidence."
         </div>
       </section>
     </>
+  );
+}
+
+// ─── Featured Opportunity Layout (With Spotlight Masking & Image Shimmer) ───
+function FeaturedOpportunityLayout() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(-1000);
+  const mouseY = useMotionValue(-1000);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
+
+  return (
+    <div className="space-y-4 md:space-y-6">
+      {/* ── Main Split Card ── */}
+      <motion.div
+        ref={containerRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={() => {
+          mouseX.set(-1000);
+          mouseY.set(-1000);
+        }}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="relative rounded-lg bg-surface-container-low border border-primary/25 overflow-hidden shadow-2xl shadow-black group/card"
+      >
+        {/* Interactive Spotlight Masking on Card Surface */}
+        <motion.div
+          className="pointer-events-none absolute -inset-px rounded-2xl md:rounded-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 z-20"
+          style={{
+            background: useTransform(
+              [mouseX, mouseY],
+              ([x, y]) =>
+                `radial-gradient(600px circle at ${x}px ${y}px, color-mix(in srgb, var(--color-primary) 15%, transparent), transparent 40%)`
+            ),
+          }}
+        />
+        {/* Glowing border spotlight */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 z-20 border border-primary/60"
+          style={{
+            maskImage: useTransform(
+              [mouseX, mouseY],
+              ([x, y]) =>
+                `radial-gradient(400px circle at ${x}px ${y}px, black, transparent)`
+            ),
+            WebkitMaskImage: useTransform(
+              [mouseX, mouseY],
+              ([x, y]) =>
+                `radial-gradient(400px circle at ${x}px ${y}px, black, transparent)`
+            ),
+          }}
+        />
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 relative z-10">
+          {/* Left Column: Image with Masking + Overlay Info */}
+          <div className="lg:col-span-7 relative min-h-[440px] md:min-h-[540px] flex flex-col justify-between p-6 md:p-10 overflow-hidden">
+            {/* Background Image with Smooth Alpha Blend Masking */}
+            <div
+              className="absolute inset-0 z-0 overflow-hidden"
+              style={{
+                maskImage:
+                  "linear-gradient(to right, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%)",
+                WebkitMaskImage:
+                  "linear-gradient(to right, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%)",
+              }}
+            >
+              <Image
+                src="/Rajanukunte_Premium_Layout.png"
+                alt="Airport Growth Belt"
+                fill
+                className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
+                unoptimized
+              />
+              {/* Dark Gradient Overlays for Readability & Seamless Masking */}
+              <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/50 to-transparent opacity-95" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-surface-container-low/20 to-surface-container-low opacity-80" />
+            </div>
+
+            {/* Top Badge with Animated Shimmer Mask */}
+            <div className="relative z-10 w-fit">
+              <div className="relative overflow-hidden rounded-full bg-primary/15 border border-primary/40 px-4 py-1.5 backdrop-blur-md shadow-lg shadow-black/40">
+                <div className="flex items-center gap-2 text-primary font-label-md text-xs font-semibold uppercase tracking-wider">
+                  <ArrowUpRight className="w-4 h-4 shrink-0" />
+                  <span>Capital Appreciation</span>
+                </div>
+                {/* Shimmer sweep */}
+                <motion.div
+                  className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"
+                  animate={{ translateX: ["-100%", "200%"] }}
+                  transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut", delay: 1 }}
+                />
+              </div>
+            </div>
+
+            {/* Bottom Property Info */}
+            <div className="relative z-10 mt-auto pt-16">
+              <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl text-white font-normal tracking-tight mb-3 drop-shadow-md">
+                Airport Growth Belt
+              </h3>
+              <div className="flex items-center gap-2 text-primary text-sm md:text-base font-medium mb-4">
+                <MapPin className="w-4 h-4 shrink-0" />
+                <span>Rajanukunte | North Bengaluru</span>
+              </div>
+              <p className="text-on-surface-variant/90 text-sm md:text-base leading-relaxed max-w-xl font-light">
+                Located within one of North Bengaluru&apos;s expanding growth corridors with improving connectivity and increasing residential demand.
+              </p>
+            </div>
+          </div>
+
+          {/* Right Column: Key Investment Metrics */}
+          <div className="lg:col-span-5 flex flex-col justify-between p-6 md:p-10 bg-surface-container/95 backdrop-blur-xl border-t lg:border-t-0 lg:border-l border-primary/15 relative z-10">
+            <div className="space-y-6 md:space-y-8 flex-1 flex flex-col justify-center py-2">
+              {/* Item 1: Investment Objective */}
+              <div className="flex items-start gap-4 pb-6 border-b border-primary/10 group/item">
+                <div className="w-12 h-12 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center shrink-0 transition-all duration-300 group-hover/item:scale-11 group-hover/item:border-primary group-hover/item:shadow-[0_0_15px_color-mix(in_srgb,var(--color-primary)_25%,transparent)]">
+                  <Target className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-primary/80 font-semibold mb-1.5">
+                    Investment Objective
+                  </p>
+                  <p className="font-serif text-xl md:text-2xl text-on-surface tracking-wide">
+                    Capital Appreciation
+                  </p>
+                </div>
+              </div>
+
+              {/* Item 2: Entry Price */}
+              <div className="flex items-start gap-4 pb-6 border-b border-primary/10 group/item">
+                <div className="w-12 h-12 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center shrink-0 transition-all duration-300 group-hover/item:scale-11 group-hover/item:border-primary group-hover/item:shadow-[0_0_15px_color-mix(in_srgb,var(--color-primary)_25%,transparent)]">
+                  <IndianRupee className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-primary/80 font-semibold mb-1.5">
+                    Entry Price
+                  </p>
+                  <p className="font-serif text-xl md:text-2xl text-on-surface tracking-wide">
+                    ₹40 Lakhs
+                  </p>
+                  <p className="text-xs text-on-surface-variant/70 mt-0.5">Onwards</p>
+                </div>
+              </div>
+
+              {/* Item 3: Investment Horizon */}
+              <div className="flex items-start gap-4 group/item">
+                <div className="w-12 h-12 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center shrink-0 transition-all duration-300 group-hover/item:scale-11 group-hover/item:border-primary group-hover/item:shadow-[0_0_15px_color-mix(in_srgb,var(--color-primary)_25%,transparent)]">
+                  <Calendar className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-primary/80 font-semibold mb-1.5">
+                    Investment Horizon
+                  </p>
+                  <p className="font-serif text-xl md:text-2xl text-on-surface tracking-wide">
+                    3 – 7 Years
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <div className="mt-8 pt-4">
+              <MagneticWrapper>
+                <Link
+                  href="/properties"
+                  className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-primary via-primary-fixed to-primary bg-[length:200%_auto] text-on-primary font-label-md font-bold text-xs md:text-sm tracking-widest uppercase flex items-center justify-between group/btn shadow-lg shadow-primary/20 hover:bg-[position:right_center] transition-all duration-500 hover:shadow-primary/40 relative overflow-hidden"
+                >
+                  <span className="relative z-10">Explore Opportunity</span>
+                  <ArrowRight className="w-5 h-5 relative z-10 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                </Link>
+              </MagneticWrapper>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── Suitable For Strip ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+        className="p-6 md:p-8 rounded-lg bg-surface-container-low border border-primary/15 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative overflow-hidden group/strip"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 group-hover/strip:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="font-label-md text-xs md:text-sm uppercase tracking-[0.25em] text-primary font-semibold">
+            Suitable For
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 w-full lg:w-auto lg:flex-1 lg:border-l lg:border-primary/20 lg:pl-8 relative z-10">
+          <div className="flex items-center gap-3.5 group/item">
+            <div className="w-10 h-10 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center shrink-0 text-primary transition-transform duration-300 group-hover/item:scale-11">
+              <User className="w-4 h-4" />
+            </div>
+            <span className="text-on-surface font-body-md text-sm md:text-base leading-snug">
+              First-Time<br className="hidden sm:inline" /> Investors
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3.5 group/item sm:border-l sm:border-primary/15 sm:pl-6 lg:border-none lg:pl-0">
+            <div className="w-10 h-10 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center shrink-0 text-primary transition-transform duration-300 group-hover/item:scale-11">
+              <TrendingUp className="w-4 h-4" />
+            </div>
+            <span className="text-on-surface font-body-md text-sm md:text-base leading-snug">
+              Long-Term<br className="hidden sm:inline" /> Investors
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3.5 group/item sm:border-l sm:border-primary/15 sm:pl-6 lg:border-none lg:pl-0">
+            <div className="w-10 h-10 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center shrink-0 text-primary transition-transform duration-300 group-hover/item:scale-11">
+              <Users className="w-4 h-4" />
+            </div>
+            <span className="text-on-surface font-body-md text-sm md:text-base leading-snug">
+              Professionals Building<br className="hidden sm:inline" /> Wealth Through Land
+            </span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── No Brokerage Strip ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        className="p-5 md:p-6 rounded-lg bg-surface-container-low border border-primary/15 flex items-center gap-4 relative overflow-hidden group/strip2"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 group-hover/strip2:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        <div className="w-11 h-11 rounded-full border border-primary/50 bg-primary/10 flex items-center justify-center shrink-0 text-primary shadow-inner shadow-primary/20 relative z-10">
+          <ShieldCheck className="w-5 h-5" />
+        </div>
+        <p className="text-on-surface-variant text-sm md:text-base leading-relaxed relative z-10">
+          <span className="text-on-surface font-medium">No brokerage. No hidden charges.</span>{" "}
+          We are paid by our partners, not by you.
+        </p>
+      </motion.div>
+    </div>
   );
 }
 

@@ -35,6 +35,8 @@ export function createAuth(prisma: PrismaClient) {
       },
     },
     account: {
+      storeStateStrategy: "database",
+      skipStateCookieCheck: true,
       accountLinking: {
         enabled: true,
         trustedProviders: ["google", "linkedin"],

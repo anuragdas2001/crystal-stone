@@ -133,15 +133,24 @@ export const useAppStore = create<AppStore>((set, get) => ({
           const { signInWithPhoneNumber, RecaptchaVerifier } = await import("firebase/auth");
           const { firebaseAuth } = await import("../lib/firebase");
           
-          if (!(window as any).recaptchaVerifier) {
-            (window as any).recaptchaVerifier = new RecaptchaVerifier(
-              firebaseAuth,
-              "recaptcha-container",
-              {
-                size: "invisible",
-              }
-            );
+          // Clear any stale reCAPTCHA instance across route navigations
+          if ((window as any).recaptchaVerifier) {
+            try {
+              (window as any).recaptchaVerifier.clear();
+            } catch (clearErr) {}
+            (window as any).recaptchaVerifier = null;
           }
+
+          const container = document.getElementById("recaptcha-container");
+          if (container) container.innerHTML = "";
+
+          (window as any).recaptchaVerifier = new RecaptchaVerifier(
+            firebaseAuth,
+            "recaptcha-container",
+            {
+              size: "invisible",
+            }
+          );
 
           const confirmationResult = await signInWithPhoneNumber(
             firebaseAuth,
@@ -150,13 +159,17 @@ export const useAppStore = create<AppStore>((set, get) => ({
           );
           (window as any).firebaseConfirmationResult = confirmationResult;
         } catch (fbErr: any) {
-          console.warn("Firebase Phone Auth fallback to server OTP:", fbErr.message || fbErr);
+          console.error("❌ Firebase Phone Auth Error:", fbErr);
           try {
             if ((window as any).recaptchaVerifier) {
               (window as any).recaptchaVerifier.clear();
             }
           } catch (clearErr) {}
           (window as any).recaptchaVerifier = null;
+
+          const errorMessage = getErrorMessage(fbErr, "Failed to send SMS via Firebase.");
+          set({ authOperation: null, authError: errorMessage });
+          return { ok: false, error: errorMessage };
         }
       }
 

@@ -88,14 +88,14 @@ export default async function handler(
 }
 
 /**
- * Local development
+ * Local & Container development
  */
 if (!process.env.VERCEL) {
   bootstrap().then(() => {
     const { port } = getAuthEnv();
 
-    server.listen(port, () => {
-      console.log(`🚀 API running at http://localhost:${port}`);
+    server.listen(port, "0.0.0.0", () => {
+      console.log(`🚀 API running and listening on 0.0.0.0:${port}`);
     });
   });
 }

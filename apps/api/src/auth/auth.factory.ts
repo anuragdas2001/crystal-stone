@@ -24,11 +24,11 @@ export function createAuth(prisma: PrismaClient) {
       },
     },
     advanced: {
-      useSecureCookies: true,
+      useSecureCookies: env.apiBaseUrl.startsWith("https://"),
       defaultCookieAttributes: {
-        sameSite: "none",   // REQUIRED — cross-domain cookies are blocked by "lax" (default)
-        secure: true,        // REQUIRED when sameSite is "none"
-        // partitioned: true,   // needed for Chrome's CHIPS / third-party cookie changes
+        sameSite: env.apiBaseUrl.startsWith("https://") ? "none" : "lax",
+        secure: env.apiBaseUrl.startsWith("https://"),
+        partitioned: env.apiBaseUrl.startsWith("https://"),
       },
       ipAddress: {
         ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for"],

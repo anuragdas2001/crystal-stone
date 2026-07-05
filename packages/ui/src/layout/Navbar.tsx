@@ -17,7 +17,7 @@ const navLinks = [
   { label: "Properties", href: "/properties" },
   { label: "Market Insights", href: "/market-insights" },
   // { label: "Private Equity – SPV", href: "/private-equity" },
-  { label: "Partner With Us", href: "/invest-with-us" },
+  { label: "Partner With Us", href: "/partner-with-us" },
   { label: "Services", href: "/services" },
   // { label: "FAQs", href: "/faqs" },
   // { label: "Contact", href: "/contact" },

@@ -8,6 +8,10 @@ import PublicPropertiesView from "./_components/PublicPropertiesView";
 export default function PropertiesPage() {
   const authStatus = useAppStore((state) => state.authStatus);
 
+  if (authStatus === "loading" || authStatus === "idle") {
+    return null;
+  }
+
   if (authStatus === "authenticated") {
     return <ProtectedPropertiesView />;
   }

@@ -10,9 +10,30 @@ import { useAppStore } from "../store/use-app-store";
 export default function CommandCentreLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const authStatus = useAppStore((state) => state.authStatus);
   const signOut = useAppStore((state) => state.signOut);
   const [searchQuery, setSearchQuery] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  if (authStatus === "loading" || authStatus === "idle") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <span className="font-label-md text-xs uppercase tracking-widest text-on-surface-variant">
+            Verifying Portal Access...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (authStatus === "unauthenticated") {
+    if (typeof window !== "undefined") {
+      router.push("/login");
+    }
+    return null;
+  }
 
   const handleLogout = async () => {
     toast.loading("Signing out of private portal...", { id: "logout-toast" });

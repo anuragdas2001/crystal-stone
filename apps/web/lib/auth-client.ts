@@ -5,7 +5,7 @@ export const authClient = createAuthClient({
   baseURL:
     typeof window !== "undefined"
       ? window.location.origin
-      : (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000"),
+      : (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001").replace(/\/+$/, ""),
   fetchOptions: {
     credentials: "include",
   },

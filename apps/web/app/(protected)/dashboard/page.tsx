@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { useAppStore } from "../../store/use-app-store";
+import { useAppStore } from "../../../store/use-app-store";
 
 // Recommended Land Opportunities (North Bangalore Focus)
 const RECOMMENDED_OPPORTUNITIES = [
@@ -135,7 +135,7 @@ export default function RealEstateDashboardPage() {
     }
   };
 
-  const displayName = authUser?.firstName || authUser?.name?.split(" ")[0] || "Investor";
+  const displayName = (authUser as Record<string, any>)?.firstName || authUser?.name?.split(" ")[0] || "Investor";
 
   return (
     <div className="p-6 md:p-10 space-y-12">

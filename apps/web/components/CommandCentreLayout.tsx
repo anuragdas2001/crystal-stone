@@ -28,12 +28,12 @@ export default function CommandCentreLayout({ children }: { children: React.Reac
     );
   }
 
-  // if (authStatus === "unauthenticated" && pathname !== "/properties" && !pathname.startsWith("/properties/")) {
-  //   if (typeof window !== "undefined") {
-  //     router.push("/login");
-  //   }
-  //   return null;
-  // }
+  if (authStatus === "unauthenticated" && pathname !== "/properties" && !pathname.startsWith("/properties/")) {
+    if (typeof window !== "undefined") {
+      router.push("/login");
+    }
+    return null;
+  }
 
   const handleLogout = async () => {
     toast.loading("Signing out of private portal...", { id: "logout-toast" });

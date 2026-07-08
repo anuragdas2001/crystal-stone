@@ -36,7 +36,7 @@ export function createAuth(prisma: PrismaClient) {
       },
     },
     advanced: {
-      useSecureCookies: true,
+      useSecureCookies: env.apiBaseUrl.startsWith("https://"),
       defaultCookieAttributes: {
         sameSite: "none",
         secure: true,

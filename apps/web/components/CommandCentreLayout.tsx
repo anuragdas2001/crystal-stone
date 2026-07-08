@@ -26,9 +26,6 @@ export default function CommandCentreLayout({ children }: { children: React.Reac
         </div>
       </div>
     );
-  }
-  console.log("authStatus : ", authStatus);
-  console.log("typeof window : ", typeof window);
   if (authStatus === "unauthenticated") {
     if (typeof window !== "undefined") {
       router.push("/login");

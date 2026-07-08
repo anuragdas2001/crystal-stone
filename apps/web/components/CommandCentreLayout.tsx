@@ -62,7 +62,7 @@ export default function CommandCentreLayout({ children }: { children: React.Reac
     <div className="flex min-h-screen bg-background text-on-surface selection:bg-primary selection:text-on-primary">
       {/* Sleek Institutional Fixed Sidebar Navigation */}
       <aside
-        className={`fixed top-0 left-0 z-40 hidden h-screen flex-col border-r border-outline-variant/30 bg-surface-container-lowest transition-all duration-300 lg:flex shrink-0 ${
+        className={`fixed top-0 left-0 z-40 hidden h-screen flex-col border-r border-outline-variant/30 bg-surface-container-lowest transition-all duration-300 lg:flex shrink-0 overflow-x-hidden ${
           isCollapsed ? "w-20" : "w-72"
         }`}
       >
@@ -100,7 +100,7 @@ export default function CommandCentreLayout({ children }: { children: React.Reac
         </div>
 
         {/* Flat Navigation List without Category Headers */}
-        <nav className="flex-1 space-y-1.5 overflow-y-auto px-3 py-6 no-scrollbar">
+        <nav className="flex-1 space-y-1.5 overflow-y-auto overflow-x-hidden px-3 py-6 no-scrollbar">
           {navItems.map((item) => {
             const active = isLinkActive(item.href, item.exact);
             return (

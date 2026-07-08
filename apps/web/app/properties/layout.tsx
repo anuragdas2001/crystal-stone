@@ -1,41 +1,49 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Navbar from "@repo/ui/layout/Navbar";
 import Footer from "@repo/ui/layout/Footer";
 import brandLogo from "../../public/brand_logo.png";
 import { useAppStore } from "../../store/use-app-store";
 import CommandCentreLayout from "../../components/CommandCentreLayout";
 
-export default function PropertiesLayout({
+function PropertiesLayoutContent({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const authStatus = useAppStore((state) => state.authStatus);
+  const searchParams = useSearchParams();
+  const isNoProfile = searchParams?.get("np") === "1";
 
-  if (authStatus === "loading" || authStatus === "idle") {
+  if (isNoProfile) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <span className="font-label-md text-xs uppercase tracking-widest text-on-surface-variant">
-            Verifying Access...
-          </span>
-        </div>
-      </div>
+      <>
+        <Navbar logo={brandLogo} />
+        <main className="grow">{children}</main>
+        <Footer />
+      </>
     );
   }
 
-  if (authStatus === "authenticated") {
-    return <CommandCentreLayout>{children}</CommandCentreLayout>;
-  }
+  return <CommandCentreLayout>{children}</CommandCentreLayout>;
+}
 
+export default function PropertiesLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <>
-      <Navbar logo={brandLogo} />
-      <main className="grow">{children}</main>
-      <Footer />
-    </>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-background">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        </div>
+      }
+    >
+      <PropertiesLayoutContent>{children}</PropertiesLayoutContent>
+    </Suspense>
   );
 }

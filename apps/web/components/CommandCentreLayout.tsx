@@ -28,7 +28,7 @@ export default function CommandCentreLayout({ children }: { children: React.Reac
     );
   }
 
-  if (authStatus === "unauthenticated" && pathname !== "/properties" && !pathname.startsWith("/properties/")) {
+  if (authStatus === "unauthenticated") {
     if (typeof window !== "undefined") {
       router.push("/login");
     }

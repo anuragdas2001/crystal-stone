@@ -14,7 +14,7 @@ type NavbarProps = {
 const navLinks = [
   { label: "Home", href: "/" },
   // { label: "About", href: "/about" },
-  { label: "Properties", href: "/properties" },
+  { label: "Properties", href: "/properties?np=1" },
   { label: "Market Insights", href: "/market-insights" },
   // { label: "Private Equity – SPV", href: "/private-equity" },
   { label: "Partner With Us", href: "/partner-with-us" },

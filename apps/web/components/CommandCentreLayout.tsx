@@ -26,12 +26,14 @@ export default function CommandCentreLayout({ children }: { children: React.Reac
         </div>
       </div>
     );
-    if (authStatus === "unauthenticated") {
-      if (typeof window !== "undefined") {
-        router.push("/login");
-      }
-      return null;
+  }
+
+  if (authStatus === "unauthenticated") {
+    if (typeof window !== "undefined") {
+      router.push("/login");
     }
+    return null;
+  }
 
     const handleLogout = async () => {
       toast.loading("Signing out of private portal...", { id: "logout-toast" });
@@ -274,4 +276,3 @@ export default function CommandCentreLayout({ children }: { children: React.Reac
       </div>
     );
   }
-}

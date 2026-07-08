@@ -38,9 +38,9 @@ export function createAuth(prisma: PrismaClient) {
     advanced: {
       useSecureCookies: env.apiBaseUrl.startsWith("https://"),
       defaultCookieAttributes: {
-        sameSite: "none",
-        secure: true,
-        partitioned: false,
+        sameSite: env.apiBaseUrl.startsWith("https://") ? "none" : "lax",
+        secure: env.apiBaseUrl.startsWith("https://"),
+        partitioned: env.apiBaseUrl.startsWith("https://"),
       },
       ipAddress: {
         ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for"],

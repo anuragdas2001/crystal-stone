@@ -89,6 +89,8 @@ export function getAuthEnv(): AuthEnv {
     trustedOrigins: Array.from(
       new Set([
         webOrigin,
+        "https://crystal-stone-web-v1.vercel.app",
+        "http://localhost:3000",
         ...splitOrigins(process.env.BETTER_AUTH_TRUSTED_ORIGINS),
       ]),
     ),

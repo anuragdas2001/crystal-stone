@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { useAppStore } from "../../store/use-app-store";
 
 // Recommended Land Opportunities (North Bangalore Focus)
 const RECOMMENDED_OPPORTUNITIES = [
@@ -114,6 +115,7 @@ const MARKET_UPDATES = [
 ];
 
 export default function RealEstateDashboardPage() {
+  const authUser = useAppStore((state) => state.authUser);
   const [wishlist, setWishlist] = useState<Record<string, boolean>>({});
 
   const toggleWishlist = (id: string, e: React.MouseEvent) => {
@@ -133,6 +135,8 @@ export default function RealEstateDashboardPage() {
     }
   };
 
+  const displayName = authUser?.firstName || authUser?.name?.split(" ")[0] || "Investor";
+
   return (
     <div className="p-6 md:p-10 space-y-12">
       {/* Welcome Hero Banner */}
@@ -146,7 +150,7 @@ export default function RealEstateDashboardPage() {
           </span>
           
           <h2 className="font-display-xl text-3xl md:text-5xl text-on-surface leading-tight font-serif">
-            Welcome Back, Joseph
+            Welcome Back, {displayName}
           </h2>
           
           <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed font-light">

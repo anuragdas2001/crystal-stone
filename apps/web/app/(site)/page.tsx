@@ -1040,8 +1040,8 @@ function FeaturedOpportunityLayout() {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-surface-container-low/20 to-surface-container-low opacity-80" />
             </div>
 
-            {/* Top Badge with Animated Shimmer Mask */}
-            <div className="relative z-10 w-fit">
+            {/* Top Badges with Animated Shimmer Mask */}
+            <div className="relative z-10 flex flex-wrap items-center gap-3">
               <div className="relative overflow-hidden rounded-full bg-primary/15 border border-primary/40 px-4 py-1.5 backdrop-blur-md shadow-lg shadow-black/40">
                 <div className="flex items-center gap-2 text-primary font-label-md text-xs font-semibold uppercase tracking-wider">
                   <ArrowUpRight className="w-4 h-4 shrink-0" />
@@ -1053,6 +1053,13 @@ function FeaturedOpportunityLayout() {
                   animate={{ translateX: ["-100%", "200%"] }}
                   transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut", delay: 1 }}
                 />
+              </div>
+
+              <div className="relative overflow-hidden rounded-full bg-black/80 border border-primary/60 px-4 py-1.5 backdrop-blur-md shadow-lg shadow-black/40">
+                <div className="flex items-center gap-2 text-white font-label-md text-xs font-bold uppercase tracking-wider">
+                  <span className="material-symbols-outlined text-primary text-[14px]">diamond</span>
+                  <span>Crystal Stone Score — <strong className="text-primary font-mono">92 / 100</strong></span>
+                </div>
               </div>
             </div>
 
@@ -1125,7 +1132,7 @@ function FeaturedOpportunityLayout() {
             <div className="mt-8 pt-4">
               <MagneticWrapper>
                 <Link
-                  href="/properties"
+                  href="/properties/airport-growth-belt"
                   className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-primary via-primary-fixed to-primary bg-[length:200%_auto] text-on-primary font-label-md font-bold text-xs md:text-sm tracking-widest uppercase flex items-center justify-between group/btn shadow-lg shadow-primary/20 hover:bg-[position:right_center] transition-all duration-500 hover:shadow-primary/40 relative overflow-hidden"
                 >
                   <span className="relative z-10">Explore Opportunity</span>

@@ -98,8 +98,25 @@ export default async function handler(
   req: IncomingMessage,
   res: ServerResponse,
 ) {
-  await bootstrap();
-  server(req, res);
+  try {
+    await bootstrap();
+    server(req, res);
+  } catch (err: any) {
+    console.error("❌ Fatal Vercel Serverless Crash during bootstrap:", err);
+    res.statusCode = 500;
+    res.setHeader("Content-Type", "application/json");
+    res.end(
+      JSON.stringify(
+        {
+          error: "Vercel Serverless Function Bootstrap Crash",
+          message: err?.message || String(err),
+          stack: err?.stack,
+        },
+        null,
+        2,
+      ),
+    );
+  }
 }
 
 /**

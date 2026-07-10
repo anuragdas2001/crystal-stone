@@ -6,7 +6,6 @@ import express from "express";
 
 import { NestFactory } from "@nestjs/core";
 import { ExpressAdapter } from "@nestjs/platform-express";
-import { toNodeHandler } from "better-auth/node";
 
 import { AppModule } from "./app.module";
 import { createAuth } from "./auth/auth.factory";
@@ -64,7 +63,8 @@ async function bootstrap() {
   /**
    * Better Auth
    */
-  const auth = createAuth(app.get(PrismaService));
+  const auth = await createAuth(app.get(PrismaService));
+  const { toNodeHandler } = await import("better-auth/node");
   const authHandler = toNodeHandler(auth.handler);
 
   /**

@@ -43,10 +43,21 @@ async function bootstrap() {
    * Global CORS
    */
   app.enableCors({
-    origin: [
-      "http://localhost:3000",
-      "https://crystal-stone-web-v1.vercel.app",
-    ],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "https://crystal-stone-web-v1.vercel.app",
+        ...env.trustedOrigins,
+      ];
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".vercel.app")
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
     credentials: true,
   });
 

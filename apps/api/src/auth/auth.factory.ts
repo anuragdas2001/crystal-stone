@@ -36,11 +36,20 @@ export function createAuth(prisma: PrismaClient) {
       },
     },
     advanced: {
-      useSecureCookies: env.apiBaseUrl.startsWith("https://"),
+      useSecureCookies: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production",
       defaultCookieAttributes: {
-        sameSite: env.apiBaseUrl.startsWith("https://") ? "none" : "lax",
-        secure: env.apiBaseUrl.startsWith("https://"),
-        partitioned: env.apiBaseUrl.startsWith("https://"),
+        sameSite: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production",
+        partitioned: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production",
+      },
+      cookies: {
+        session_token: {
+          attributes: {
+            sameSite: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production",
+            partitioned: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production",
+          },
+        },
       },
       ipAddress: {
         ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for"],

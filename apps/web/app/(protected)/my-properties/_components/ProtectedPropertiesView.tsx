@@ -158,7 +158,7 @@ export default function ProtectedPropertiesView() {
 
               <div className="pt-2 flex items-center gap-4">
                 <Link
-                  href="/properties/airport-growth-belt"
+                  href="/my-properties/airport-growth-belt"
                   className="px-8 py-4 bg-primary text-on-primary font-label-md text-xs uppercase tracking-widest font-bold rounded-xl luxury-button shadow-lg shadow-primary/30 flex items-center gap-2"
                 >
                   <span>Launch Research Terminal</span>
@@ -195,7 +195,7 @@ export default function ProtectedPropertiesView() {
             className="glass-panel flex flex-col justify-between group transition-all duration-500 hover:border-primary/80 overflow-hidden shadow-xl"
           >
             {/* Image Header */}
-            <Link href={`/properties/${opp.id}`} className="relative h-64 w-full overflow-hidden bg-surface-container block">
+            <Link href={`/my-properties/${opp.id}`} className="relative h-64 w-full overflow-hidden bg-surface-container block">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={opp.image}
@@ -236,7 +236,7 @@ export default function ProtectedPropertiesView() {
             {/* Card Content */}
             <div className="flex flex-1 flex-col justify-between p-6 space-y-6">
               <div className="space-y-4">
-                <Link href={`/properties/${opp.id}`}>
+                <Link href={`/my-properties/${opp.id}`}>
                   <h4 className="font-serif text-xl text-on-surface group-hover:text-primary transition-colors leading-snug font-semibold">
                     {opp.title}
                   </h4>
@@ -271,7 +271,7 @@ export default function ProtectedPropertiesView() {
                   </p>
                 </div>
                 <Link
-                  href={`/properties/${opp.id}`}
+                  href={`/my-properties/${opp.id}`}
                   className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary font-label-md uppercase tracking-widest text-xs luxury-button font-bold rounded"
                 >
                   <span>Open Terminal</span>
@@ -291,7 +291,7 @@ export default function ProtectedPropertiesView() {
             Why Our Research Team Curates These
           </h3>
           <p className="text-xs text-on-surface-variant mt-1">
-            Every property listed in your Command Centre undergoes our mandatory 6-pillar verification:
+            Every property listed in your Investor Dashboard undergoes our mandatory 6-pillar verification:
           </p>
         </div>
 

@@ -190,7 +190,7 @@ export default function RealEstateDashboardPage() {
             </p>
           </div>
           <Link
-            href="/properties"
+            href="/my-properties"
             className="flex items-center gap-1 font-label-md text-xs text-primary uppercase tracking-widest hover:underline"
           >
             View Full Portfolio
@@ -285,7 +285,7 @@ export default function RealEstateDashboardPage() {
             </p>
           </div>
           <Link
-            href="/properties"
+            href="/my-properties"
             className="flex items-center gap-1 font-label-md text-xs text-primary uppercase tracking-widest hover:underline self-start sm:self-auto"
           >
             View All Opportunities
@@ -303,7 +303,7 @@ export default function RealEstateDashboardPage() {
                 className="glass-panel flex flex-col justify-between group transition-all duration-500 hover:border-primary/80 overflow-hidden"
               >
                 {/* Image Header */}
-                <Link href={`/properties/${slug}`} className="relative h-64 w-full overflow-hidden bg-surface-container block">
+                <Link href={`/my-properties/${slug}`} className="relative h-64 w-full overflow-hidden bg-surface-container block">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={opp.image}
@@ -344,7 +344,7 @@ export default function RealEstateDashboardPage() {
                 {/* Card Content */}
                 <div className="flex flex-1 flex-col justify-between p-6 space-y-6">
                   <div className="space-y-4">
-                    <Link href={`/properties/${slug}`}>
+                    <Link href={`/my-properties/${slug}`}>
                       <h4 className="font-headline-lg text-xl text-on-surface group-hover:text-primary transition-colors leading-snug font-serif font-semibold">
                         {opp.title}
                       </h4>
@@ -379,7 +379,7 @@ export default function RealEstateDashboardPage() {
                       </p>
                     </div>
                     <Link
-                      href={`/properties/${slug}`}
+                      href={`/my-properties/${slug}`}
                       className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary font-label-md uppercase tracking-widest text-xs luxury-button font-bold"
                     >
                       View Details

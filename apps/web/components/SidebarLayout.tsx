@@ -7,7 +7,144 @@ import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useAppStore } from "../store/use-app-store";
 
-export default function CommandCentreLayout({ children }: { children: React.ReactNode }) {
+export function Sidebar({ isCollapsed, setIsCollapsed, pathname, handleLogout }: {
+  isCollapsed: boolean;
+  setIsCollapsed: (val: boolean) => void;
+  pathname: string;
+  handleLogout: () => Promise<void>;
+}) {
+  const isLinkActive = (href: string, exact = false) => {
+    if (exact) return pathname === href;
+    return pathname === href || pathname.startsWith(href + "/");
+  };
+
+  const navItems = [
+    { label: "Dashboard", icon: "dashboard", href: "/dashboard", exact: true },
+    { label: "Properties", icon: "real_estate_agent", href: "/my-properties" },
+    { label: "Documents", icon: "description", href: "/dashboard/documents" },
+    { label: "Transactions", icon: "receipt_long", href: "/dashboard/transactions" },
+    { label: "Market Insights", icon: "trending_up", href: "/dashboard/insights" },
+    { label: "Consultation", icon: "support_agent", href: "/dashboard/consultation" },
+    { label: "Legal & Compliance", icon: "gavel", href: "/dashboard/legal" },
+    { label: "Property Management", icon: "home_work", href: "/dashboard/management" },
+    { label: "Performance", icon: "leaderboard", href: "/dashboard/performance" },
+    { label: "Analytics & Reports", icon: "analytics", href: "/dashboard/reports" },
+  ];
+
+  return (
+    <aside
+      className={`fixed top-0 left-0 z-40 hidden h-screen flex-col border-r border-outline-variant/30 bg-surface-container-lowest transition-all duration-300 lg:flex shrink-0 ${
+        isCollapsed ? "w-20" : "w-72"
+      }`}
+    >
+      {/* Brand Header */}
+      <div className={`flex h-20 items-center border-b border-outline-variant/30 shrink-0 transition-all ${
+        isCollapsed ? "justify-center px-2" : "justify-between px-6"
+      }`}>
+        {!isCollapsed ? (
+          <Link href="/dashboard" className="flex items-center gap-2 overflow-hidden py-1">
+            <Image
+              src="/brand_logo.png"
+              alt="Crystal Stone Logo"
+              width={210}
+              height={56}
+              className="h-14 w-auto object-contain"
+              unoptimized
+            />
+          </Link>
+        ) : (
+          <Link
+            href="/dashboard"
+            className="flex items-center justify-center p-1 rounded-lg transition-transform hover:scale-105"
+            title="Crystal Stone Private Portal"
+          >
+            <Image
+              src="/brand_logo_vertical.png"
+              alt="Crystal Stone Vertical Logo"
+              width={64}
+              height={64}
+              className="h-14 w-auto object-contain"
+              unoptimized
+            />
+          </Link>
+        )}
+      </div>
+
+      {/* Flat Navigation List */}
+      <nav className="flex-1 space-y-1.5 overflow-y-auto px-3 py-6 no-scrollbar">
+        {navItems.map((item) => {
+          const active = isLinkActive(item.href, item.exact);
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              onClick={() => {
+                if (item.href !== "/my-properties" && item.href !== "/properties" && item.href !== "/dashboard") {
+                  toast(`Viewing ${item.label} (Phase 1 Institutional Module)`, { icon: "✨" });
+                }
+              }}
+              title={isCollapsed ? item.label : undefined}
+              className={`flex w-full items-center gap-3.5 px-3.5 py-3 font-label-md text-xs uppercase tracking-widest transition-all duration-200 rounded-lg ${
+                active
+                  ? "bg-primary text-on-primary luxury-button shadow-lg shadow-primary/20 font-bold"
+                  : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+              } ${isCollapsed ? "justify-center px-0" : ""}`}
+            >
+              <span className="material-symbols-outlined text-[20px] shrink-0">{item.icon}</span>
+              {!isCollapsed && <span className="truncate">{item.label}</span>}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* User Footer Card */}
+      <div className="border-t border-outline-variant/30 p-3 shrink-0">
+        {!isCollapsed ? (
+          <div className="flex items-center justify-between bg-surface-container/80 p-3 rounded-xl border border-outline-variant/20">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-primary text-xs font-bold text-on-primary rounded-full shadow-inner">
+                JK
+              </div>
+              <div className="overflow-hidden">
+                <p className="truncate text-xs font-semibold text-on-surface">Joseph Kiran</p>
+                <p className="truncate font-label-md text-[10px] text-primary uppercase tracking-widest">
+                  Premium Investor
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="Sign Out of Private Portal"
+              className="flex h-8 w-8 shrink-0 items-center justify-center text-on-surface-variant hover:bg-red-500/10 hover:text-red-400 transition-colors rounded-md"
+            >
+              <span className="material-symbols-outlined text-[18px]">logout</span>
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-3 py-1">
+            <div
+              title="Joseph Kiran — Premium Investor"
+              className="flex h-9 w-9 items-center justify-center bg-primary text-xs font-bold text-on-primary rounded-full cursor-pointer shadow-inner"
+            >
+              JK
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="Sign Out of Private Portal"
+              className="flex h-9 w-9 items-center justify-center text-on-surface-variant hover:bg-red-500/10 hover:text-red-400 transition-colors rounded-lg"
+            >
+              <span className="material-symbols-outlined text-[18px]">logout</span>
+            </button>
+          </div>
+        )}
+      </div>
+    </aside>
+  );
+}
+
+export default function SidebarLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const authStatus = useAppStore((state) => state.authStatus);
@@ -30,7 +167,7 @@ export default function CommandCentreLayout({ children }: { children: React.Reac
 
   if (authStatus === "unauthenticated") {
     if (typeof window !== "undefined") {
-      router.push("/login");
+      router.replace("/login");
     }
     return null;
   }
@@ -47,9 +184,9 @@ export default function CommandCentreLayout({ children }: { children: React.Reac
   };
 
   const getPageTitle = () => {
-    if (pathname === "/dashboard") return "Private Investor Command Centre";
-    if (pathname.startsWith("/properties/")) return "Private Investment Research Terminal";
-    if (pathname === "/properties") return "Investment Portfolio & Opportunities";
+    if (pathname === "/dashboard") return "Private Investor Dashboard";
+    if (pathname.startsWith("/my-properties/") || pathname.startsWith("/properties/")) return "Private Investment Research Terminal";
+    if (pathname === "/my-properties" || pathname === "/properties") return "Investment Portfolio & Opportunities";
     if (pathname === "/dashboard/documents") return "Institutional Due Diligence & Documents";
     if (pathname === "/dashboard/transactions") return "Transaction History & Ledger";
     if (pathname === "/dashboard/insights") return "Market Intelligence & Insights";
@@ -58,139 +195,17 @@ export default function CommandCentreLayout({ children }: { children: React.Reac
     if (pathname === "/dashboard/management") return "Property Management & Asset Care";
     if (pathname === "/dashboard/performance") return "Portfolio Performance Tracking";
     if (pathname === "/dashboard/reports") return "Institutional Reports & Analytics";
-    return "Private Investor Command Centre";
+    return "Private Investor Dashboard";
   };
-
-  const isLinkActive = (href: string, exact = false) => {
-    if (exact) return pathname === href;
-    return pathname === href || pathname.startsWith(href + "/");
-  };
-
-  const navItems = [
-    { label: "Dashboard", icon: "dashboard", href: "/dashboard", exact: true },
-    { label: "Properties", icon: "real_estate_agent", href: "/properties" },
-    { label: "Documents", icon: "description", href: "/dashboard/documents" },
-    { label: "Transactions", icon: "receipt_long", href: "/dashboard/transactions" },
-    { label: "Market Insights", icon: "trending_up", href: "/dashboard/insights" },
-    { label: "Consultation", icon: "support_agent", href: "/dashboard/consultation" },
-    { label: "Legal & Compliance", icon: "gavel", href: "/dashboard/legal" },
-    { label: "Property Management", icon: "home_work", href: "/dashboard/management" },
-    { label: "Performance", icon: "leaderboard", href: "/dashboard/performance" },
-    { label: "Analytics & Reports", icon: "analytics", href: "/dashboard/reports" },
-  ];
 
   return (
     <div className="flex min-h-screen bg-background text-on-surface selection:bg-primary selection:text-on-primary">
-      {/* Sleek Institutional Fixed Sidebar Navigation */}
-      <aside
-        className={`fixed top-0 left-0 z-40 hidden h-screen flex-col border-r border-outline-variant/30 bg-surface-container-lowest transition-all duration-300 lg:flex shrink-0 ${
-          isCollapsed ? "w-20" : "w-72"
-        }`}
-      >
-        {/* Brand Header */}
-        <div className={`flex h-20 items-center border-b border-outline-variant/30 shrink-0 transition-all ${
-          isCollapsed ? "justify-center px-2" : "justify-between px-6"
-        }`}>
-          {!isCollapsed ? (
-            <Link href="/dashboard" className="flex items-center gap-2 overflow-hidden py-1">
-              <Image
-                src="/brand_logo.png"
-                alt="Crystal Stone Logo"
-                width={210}
-                height={56}
-                className="h-14 w-auto object-contain"
-                unoptimized
-              />
-            </Link>
-          ) : (
-            <Link
-              href="/dashboard"
-              className="flex items-center justify-center p-1 rounded-lg transition-transform hover:scale-105"
-              title="Crystal Stone Private Portal"
-            >
-              <Image
-                src="/brand_logo_vertical.png"
-                alt="Crystal Stone Vertical Logo"
-                width={64}
-                height={64}
-                className="h-14 w-auto object-contain"
-                unoptimized
-              />
-            </Link>
-          )}
-        </div>
-
-        {/* Flat Navigation List without Category Headers */}
-        <nav className="flex-1 space-y-1.5 overflow-y-auto px-3 py-6 no-scrollbar">
-          {navItems.map((item) => {
-            const active = isLinkActive(item.href, item.exact);
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={() => {
-                  if (item.href !== "/properties" && item.href !== "/dashboard") {
-                    toast(`Viewing ${item.label} (Phase 1 Institutional Module)`, { icon: "✨" });
-                  }
-                }}
-                title={isCollapsed ? item.label : undefined}
-                className={`flex w-full items-center gap-3.5 px-3.5 py-3 font-label-md text-xs uppercase tracking-widest transition-all duration-200 rounded-lg ${
-                  active
-                    ? "bg-primary text-on-primary luxury-button shadow-lg shadow-primary/20 font-bold"
-                    : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
-                } ${isCollapsed ? "justify-center px-0" : ""}`}
-              >
-                <span className="material-symbols-outlined text-[20px] shrink-0">{item.icon}</span>
-                {!isCollapsed && <span className="truncate">{item.label}</span>}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* User Footer Card */}
-        <div className="border-t border-outline-variant/30 p-3 shrink-0">
-          {!isCollapsed ? (
-            <div className="flex items-center justify-between bg-surface-container/80 p-3 rounded-xl border border-outline-variant/20">
-              <div className="flex items-center gap-3 overflow-hidden">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-primary text-xs font-bold text-on-primary rounded-full shadow-inner">
-                  JK
-                </div>
-                <div className="overflow-hidden">
-                  <p className="truncate text-xs font-semibold text-on-surface">Joseph Kiran</p>
-                  <p className="truncate font-label-md text-[10px] text-primary uppercase tracking-widest">
-                    Premium Investor
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleLogout}
-                title="Sign Out of Private Portal"
-                className="flex h-8 w-8 shrink-0 items-center justify-center text-on-surface-variant hover:bg-red-500/10 hover:text-red-400 transition-colors rounded-md"
-              >
-                <span className="material-symbols-outlined text-[18px]">logout</span>
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-3 py-1">
-              <div
-                title="Joseph Kiran — Premium Investor"
-                className="flex h-9 w-9 items-center justify-center bg-primary text-xs font-bold text-on-primary rounded-full cursor-pointer shadow-inner"
-              >
-                JK
-              </div>
-              <button
-                type="button"
-                onClick={handleLogout}
-                title="Sign Out of Private Portal"
-                className="flex h-9 w-9 items-center justify-center text-on-surface-variant hover:bg-red-500/10 hover:text-red-400 transition-colors rounded-lg"
-              >
-                <span className="material-symbols-outlined text-[18px]">logout</span>
-              </button>
-            </div>
-          )}
-        </div>
-      </aside>
+      <Sidebar
+        isCollapsed={isCollapsed}
+        setIsCollapsed={setIsCollapsed}
+        pathname={pathname}
+        handleLogout={handleLogout}
+      />
 
       {/* Main Content Area (padded left to offset fixed sidebar on desktop) */}
       <div

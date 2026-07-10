@@ -2,19 +2,17 @@
 
 import React, { Suspense } from "react";
 import Link from "next/link";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import PropertyResearchTerminal from "@repo/ui/property/PropertyResearchTerminal";
-import { useAppStore } from "../../../store/use-app-store";
+import { useAppStore } from "../../../../store/use-app-store";
 
 function PropertyAnalysisPageContent() {
   const router = useRouter();
   const routeParams = useParams();
-  const searchParams = useSearchParams();
   const slug = (routeParams?.slug as string) || "airport-growth-belt";
   const authStatus = useAppStore((state) => state.authStatus);
-  const isNoProfile = searchParams?.get("np") === "1";
-  const isUnlocked = !isNoProfile && authStatus === "authenticated";
+  const isUnlocked = authStatus === "authenticated";
 
   const handleUnlockRequest = () => {
     toast("Redirecting to secure investor portal sign-in...", { icon: "🔒" });

@@ -167,6 +167,7 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
 
   if (authStatus === "unauthenticated") {
     if (typeof window !== "undefined") {
+      console.warn("[SidebarLayout] ⚠️ authStatus is 'unauthenticated'. Redirecting to /login from:", window.location.pathname);
       router.replace("/login");
     }
     return null;

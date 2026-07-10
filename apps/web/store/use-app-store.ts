@@ -83,13 +83,17 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   loadAuthSession: async () => {
+    console.log("[Auth Store] ⏳ loadAuthSession initiated. Current origin:", typeof window !== "undefined" ? window.location.origin : "server");
     set({ authStatus: "loading", authOperation: "session", authError: null });
 
     try {
+      console.log("[Auth Store] 📡 Calling authClient.getSession()...");
       const { data, error } = await authClient.getSession();
+      console.log("[Auth Store] 📥 authClient.getSession() result:", { data, error });
 
       if (error) {
         const message = getErrorMessage(error, "Unable to load session.");
+        console.warn("[Auth Store] ⚠️ getSession returned error or empty session:", message, error);
 
         set({
           authStatus: "unauthenticated",
@@ -102,14 +106,18 @@ export const useAppStore = create<AppStore>((set, get) => ({
         return { ok: false, error: message };
       }
 
+      const nextState = getSessionState(data);
+      console.log("[Auth Store] ✅ Session loaded successfully. Setting authStatus:", nextState.authStatus, "User:", nextState.authUser?.email || nextState.authUser?.name || "null");
+
       set({
-        ...getSessionState(data),
+        ...nextState,
         authOperation: null,
       });
 
       return { ok: true };
     } catch (error) {
       const message = getErrorMessage(error, "Unable to load session.");
+      console.error("[Auth Store] ❌ Exception in loadAuthSession:", error);
 
       set({
         authStatus: "unauthenticated",
@@ -288,18 +296,16 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   continueWithGoogle: async (callbackURL = "/dashboard") => {
+    console.log("[Auth Store] 🚀 continueWithGoogle triggered. Target origin:", typeof window !== "undefined" ? window.location.origin : "server");
     set({ authOperation: "google", authError: null });
 
-    // Build absolute URL so Better Auth redirects to the frontend, not the API
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    // const absoluteCallbackURL = callbackURL.startsWith("http")
-    //   ? callbackURL
-    //   : `${origin}${callbackURL}`;
+    const targetCallback = `${typeof window !== "undefined" ? window.location.origin : ""}/dashboard`;
+    console.log("[Auth Store] 🔗 Initiating Google social login with callbackURL:", targetCallback);
 
     try {
       const { error } = await authClient.signIn.social({
         provider: "google",
-        callbackURL: `${window.location.origin}/dashboard`,
+        callbackURL: targetCallback,
       });
 
       if (error) {
@@ -307,15 +313,18 @@ export const useAppStore = create<AppStore>((set, get) => ({
           error,
           "Unable to continue with Google.",
         );
+        console.error("[Auth Store] ❌ Google social login error:", message, error);
 
         set({ authOperation: null, authError: message });
         return { ok: false, error: message };
       }
 
+      console.log("[Auth Store] ✅ Google social login request sent successfully.");
       set({ authOperation: null });
       return { ok: true };
     } catch (error) {
       const message = getErrorMessage(error, "Unable to continue with Google.");
+      console.error("[Auth Store] ❌ Exception in continueWithGoogle:", error);
 
       set({ authOperation: null, authError: message });
       return { ok: false, error: message };
@@ -323,12 +332,16 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   continueWithLinkedIn: async (callbackURL = "/dashboard") => {
+    console.log("[Auth Store] 🚀 continueWithLinkedIn triggered. Target origin:", typeof window !== "undefined" ? window.location.origin : "server");
     set({ authOperation: "linkedin", authError: null });
+
+    const targetCallback = `${typeof window !== "undefined" ? window.location.origin : ""}/dashboard`;
+    console.log("[Auth Store] 🔗 Initiating LinkedIn social login with callbackURL:", targetCallback);
 
     try {
       const { error } = await authClient.signIn.social({
         provider: "linkedin",
-        callbackURL: `${window.location.origin}/dashboard`,
+        callbackURL: targetCallback,
       });
 
       if (error) {
@@ -336,15 +349,18 @@ export const useAppStore = create<AppStore>((set, get) => ({
           error,
           "Unable to continue with LinkedIn.",
         );
+        console.error("[Auth Store] ❌ LinkedIn social login error:", message, error);
 
         set({ authOperation: null, authError: message });
         return { ok: false, error: message };
       }
 
+      console.log("[Auth Store] ✅ LinkedIn social login request sent successfully.");
       set({ authOperation: null });
       return { ok: true };
     } catch (error) {
       const message = getErrorMessage(error, "Unable to continue with LinkedIn.");
+      console.error("[Auth Store] ❌ Exception in continueWithLinkedIn:", error);
 
       set({ authOperation: null, authError: message });
       return { ok: false, error: message };

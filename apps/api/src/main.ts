@@ -73,6 +73,10 @@ async function bootstrap() {
   server.use(
     "/api/auth",
     (req: Request, res: Response, next: NextFunction) => {
+      console.log(`[API Auth] 🚀 Incoming ${req.method} ${req.url} | Origin: ${req.headers.origin || "none"} | Cookies present: ${!!req.headers.cookie}`);
+      if (req.headers.cookie) {
+        console.log(`[API Auth] 🍪 Cookie header keys:`, req.headers.cookie.split(";").map((c) => c.trim().split("=")[0]).join(", "));
+      }
       Promise.resolve(authHandler(req, res)).catch(next);
     },
   );

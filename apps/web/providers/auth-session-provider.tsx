@@ -11,6 +11,7 @@ export function AuthSessionProvider({
   const loadAuthSession = useAppStore((state) => state.loadAuthSession);
 
   useEffect(() => {
+    console.log("[AuthSessionProvider] ⚡ Provider mounted. Triggering initial loadAuthSession()...");
     void loadAuthSession();
   }, [loadAuthSession]);
 

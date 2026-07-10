@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "http";
 
 // Import the pre-compiled NestJS Express handler from dist/main after `nest build` runs during Vercel build
+// @ts-ignore
 import handler from "../dist/main";
 
 export default async function vercelServerlessHandler(

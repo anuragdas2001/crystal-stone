@@ -12,7 +12,19 @@ export async function createAuth(prisma: PrismaClient) {
     appName: "Crystal Stone",
     baseURL: env.apiBaseUrl,
     secret: env.secret,
-    trustedOrigins: env.trustedOrigins,
+    trustedOrigins: async (request) => {
+      const origin = request?.headers?.get("origin") || request?.headers?.get("referer");
+      const allowed = [...env.trustedOrigins];
+      if (origin) {
+        try {
+          const url = new URL(origin);
+          if (url.hostname.endsWith(".vercel.app") || url.hostname === "localhost") {
+            allowed.push(url.origin);
+          }
+        } catch (e) {}
+      }
+      return Array.from(new Set(allowed));
+    },
 
     database: prismaAdapter(prisma, {
       provider: "postgresql",

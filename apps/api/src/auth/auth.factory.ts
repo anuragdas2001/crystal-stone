@@ -52,14 +52,14 @@ export async function createAuth(prisma: PrismaClient) {
       defaultCookieAttributes: {
         sameSite: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production" ? "none" : "lax",
         secure: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production",
-        partitioned: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production",
+        partitioned: false,
       },
       cookies: {
         session_token: {
           attributes: {
             sameSite: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production" ? "none" : "lax",
             secure: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production",
-            partitioned: env.apiBaseUrl.startsWith("https://") || process.env.NODE_ENV === "production",
+            partitioned: false,
           },
         },
       },

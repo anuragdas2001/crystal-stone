@@ -82,7 +82,7 @@ export default function SignupPage() {
 
     if (result.ok) {
       toast.success("Account created successfully! Welcome to Crystal Stone.");
-      router.push("/dashboard");
+      router.push("/onboarding");
       router.refresh();
     } else {
       toast.error(result.error || "Registration failed. Please check the code.");
@@ -90,11 +90,11 @@ export default function SignupPage() {
   }
 
   async function handleGoogleSignIn() {
-    await continueWithGoogle("/dashboard");
+    await continueWithGoogle("/onboarding");
   }
 
   async function handleLinkedInSignIn() {
-    await continueWithLinkedIn("/dashboard");
+    await continueWithLinkedIn("/onboarding");
   }
 
   return (

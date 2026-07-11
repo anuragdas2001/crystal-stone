@@ -21,8 +21,57 @@ model User {
   updatedAt           DateTime  @updatedAt
   accounts            Account[]
   sessions            Session[]
+  investorProfiles    InvestorProfile[]
 
   @@map("user")
+}
+
+model InvestorProfile {
+  id                    String    @id @default(cuid())
+  userId                String?
+  user                  User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  visitorEmail          String?
+  visitorPhone          String?
+
+  // Question 1: Asset Preference
+  q1_assetPreference    String
+  crm_assetPreference   String
+
+  // Question 2: Primary Objective
+  q2_investmentGoal     String
+  crm_investmentGoal    String
+
+  // Question 3: Investment Budget
+  q3_budget             String
+  crm_budgetSegment     String
+
+  // Question 4: Timeline / Urgency
+  q4_timeline           String
+  crm_leadPriority      String
+
+  // Question 5: Funding Method
+  q5_fundingMethod      String
+  crm_fundingMethod     String
+
+  // Question 6: Decision Making Authority
+  q6_decisionMaker      String
+  crm_decisionAuthority String
+
+  // Question 7: Real Estate Experience
+  q7_experience         String
+  crm_experienceLevel   String
+
+  // Question 8: Investment Approach / Risk Profile
+  q8_riskApproach       String
+  crm_riskProfile       String
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([crm_leadPriority])
+  @@index([crm_budgetSegment])
+  @@map("investor_profile")
 }
 
 model Session {

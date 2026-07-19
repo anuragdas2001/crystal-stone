@@ -248,15 +248,20 @@ export default function OnboardingWizardPage() {
   }, [step, answers, isSubmitting]);
 
   return (
-    <div className="min-h-screen bg-[#08090C] text-on-surface selection:bg-primary selection:text-on-primary font-sans flex flex-col justify-between">
+    <div className="min-h-screen bg-surface-container-lowest text-on-surface selection:bg-primary selection:text-on-primary font-sans flex flex-col justify-between">
       
       {/* ── TOP LUXURY BRANDING NAVBAR ── */}
       <header className="bg-surface-container-lowest/90 border-b border-outline-variant/30 backdrop-blur-md sticky top-0 z-40 px-4 md:px-8 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3 group">
-            <span className="font-serif text-lg md:text-xl text-white font-bold tracking-tight group-hover:text-primary transition-colors">
-              CRYSTAL STONE <span className="text-primary font-normal text-xs uppercase tracking-widest hidden sm:inline">| Private Investment Research</span>
-            </span>
+            <Image 
+              src="/brand_logo_horizontal.png" 
+              alt="Crystal Stone" 
+              width={280} 
+              height={60} 
+              className="object-contain h-10 sm:h-12 w-auto" 
+              priority
+            />
           </Link>
 
           {step <= 8 ? (
@@ -301,15 +306,24 @@ export default function OnboardingWizardPage() {
       </header>
 
       {/* ── MAIN CONTENT AREA WITH STEPPER TRACK & CARD OR RESULTS DASHBOARD ── */}
-      <main className={`flex-1 w-full mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-10 flex flex-col justify-center ${step <= 8 ? "max-w-5xl" : "max-w-7xl"}`}>
+      <main className="flex-1 w-full flex flex-col">
         
         {step <= 8 && currentQuestion ? (
           /* ── STEPPER WIZARD UI (QUESTIONS 1 TO 8) ── */
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+          <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-4 duration-300">
             
-            {/* Horizontal Stepper Progress Bar across Top */}
-            <div className="bg-surface-container-low/90 border border-outline-variant/30 rounded-2xl p-4 sm:p-5 shadow-lg backdrop-blur-md">
-              <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 relative">
+            {/* Horizontal Line Connected Stepper */}
+            <div className="w-full max-w-4xl mx-auto py-8 px-4 sm:px-8 mb-4">
+              <div className="relative flex justify-between items-center w-full">
+                {/* Background Line */}
+                <div className="absolute left-[6%] right-[6%] top-4 h-[2px] bg-surface-container-high z-0" />
+                
+                {/* Active Line */}
+                <div 
+                  className="absolute left-[6%] top-4 h-[2px] bg-primary z-0 transition-all duration-500 ease-in-out"
+                  style={{ width: `${Math.max(0, ((step - 1) / (PROFILING_QUESTIONS.length - 1)) * 88)}%` }} 
+                />
+
                 {PROFILING_QUESTIONS.map((q, idx) => {
                   const stepNumber = idx + 1;
                   const isCompleted = step > stepNumber;
@@ -322,21 +336,15 @@ export default function OnboardingWizardPage() {
                       type="button"
                       disabled={isUpcoming}
                       onClick={() => handleJumpToStep(stepNumber)}
-                      className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all duration-200 relative group ${
-                        isCompleted
-                          ? "hover:bg-primary/15 cursor-pointer text-emerald-400"
-                          : isActive
-                          ? "bg-primary/20 border border-primary shadow-md shadow-primary/20 text-white"
-                          : "opacity-40 cursor-not-allowed text-on-surface-variant"
-                      }`}
+                      className={`relative z-10 flex flex-col items-center group ${isUpcoming ? "cursor-not-allowed" : "cursor-pointer"}`}
                     >
                       <div
-                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-mono text-xs sm:text-sm font-bold border-2 transition-all ${
+                        className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ring-4 ring-surface-container-lowest ${
                           isCompleted
-                            ? "bg-emerald-500/20 border-emerald-500 text-emerald-400"
+                            ? "bg-primary text-on-primary"
                             : isActive
-                            ? "bg-primary border-primary text-on-primary scale-110 shadow-lg shadow-primary/40"
-                            : "bg-surface-container border-outline-variant text-on-surface-variant"
+                            ? "bg-primary text-on-primary shadow-lg shadow-primary/40"
+                            : "bg-surface-container-high text-on-surface-variant group-hover:bg-surface-container-highest"
                         }`}
                       >
                         {isCompleted ? (
@@ -345,7 +353,7 @@ export default function OnboardingWizardPage() {
                           stepNumber
                         )}
                       </div>
-                      <span className={`text-[10px] sm:text-xs font-serif tracking-tight mt-1.5 truncate max-w-full ${isActive ? "text-primary font-bold" : isCompleted ? "text-on-surface font-medium" : "text-on-surface-variant"}`}>
+                      <span className={`absolute top-10 text-[10px] sm:text-xs font-serif tracking-tight whitespace-nowrap transition-colors mt-2 ${isActive ? "text-primary font-bold" : isCompleted ? "text-on-surface font-medium" : "text-on-surface-variant"}`}>
                         {q.stepLabel}
                       </span>
                     </button>
@@ -354,30 +362,28 @@ export default function OnboardingWizardPage() {
               </div>
             </div>
 
+             {/* <div className="absolute -top-32 -right-32 w-80 h-80 bg-primary/30 rounded-full blur-3xl pointer-events-none" /> */}
             {/* Glassmorphic Stepper Question Card */}
-            <div className="bg-surface-container-lowest/80 border border-outline-variant/30 rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl backdrop-blur-xl space-y-8 relative overflow-hidden">
-              <div className="absolute -top-32 -right-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="flex-1 px-4 sm:px-8 md:px-12 py-8 md:py-12 flex flex-col relative overflow-hidden">
 
               {/* Question Header */}
-              <div className="space-y-2 relative z-10">
-                <div className="flex items-center justify-between">
+              <div className="space-y-2 relative z-10 mb-8 max-w-4xl mx-auto flex flex-col items-center text-center">
+                <div className="flex items-center justify-center mb-2">
                   <span className="px-3 py-1 bg-primary/15 text-primary border border-primary/30 rounded-full font-mono text-xs uppercase tracking-widest font-bold">
                     STEP {step} OF 8 • {currentQuestion.stepLabel}
-                  </span>
-                  <span className="text-xs text-on-surface-variant font-mono">
-                    Select exactly one preference
                   </span>
                 </div>
                 <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl text-white font-normal leading-tight tracking-tight pt-2">
                   {currentQuestion.title}
                 </h1>
-                <p className="text-xs sm:text-sm md:text-base text-on-surface-variant max-w-2xl">
+                <p className="text-xs sm:text-sm md:text-base text-on-surface-variant max-w-2xl text-center">
                   {currentQuestion.subtitle}
+                  <span className="block mt-2 text-[11px] text-on-surface-variant/70 font-mono">Select exactly one preference</span>
                 </p>
               </div>
 
               {/* Answer Options Stack */}
-              <div className="space-y-3 relative z-10">
+              <div className="space-y-3 relative z-10 mb-8 max-w-4xl w-full mx-auto">
                 {currentQuestion.options.map((opt, idx) => {
                   const isSelected = answers[currentQuestion.field] === opt.label;
                   return (
@@ -417,34 +423,27 @@ export default function OnboardingWizardPage() {
               </div>
 
               {/* Docked Card Footer Navigation */}
-              <div className="pt-6 border-t border-outline-variant/20 flex items-center justify-between relative z-10">
-                {step > 1 ? (
+              <div className="mt-auto pt-6 border-t border-outline-variant/20 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
+                {step > 1 && (
                   <button
                     type="button"
                     onClick={handlePrev}
-                    className="px-5 py-3 bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-xs uppercase tracking-widest font-semibold rounded-xl border border-outline-variant/30 transition-all flex items-center gap-2"
+                    className="px-5 py-3.5 sm:py-4 bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-xs sm:text-sm uppercase tracking-widest font-semibold rounded-xl border border-outline-variant/30 transition-all flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined text-[18px]">arrow_back</span>
                     <span>Previous Step</span>
                   </button>
-                ) : (
-                  <div />
                 )}
 
-                <div className="flex items-center gap-4">
-                  <span className="text-xs text-on-surface-variant font-mono hidden sm:inline">
-                    Step {step} of 8
-                  </span>
-                  <button
-                    type="button"
-                    disabled={isSubmitting}
-                    onClick={handleNext}
-                    className="px-7 sm:px-9 py-3.5 sm:py-4 bg-gradient-to-r from-primary via-primary-fixed to-primary text-on-primary font-label-md text-xs sm:text-sm uppercase tracking-widest font-bold rounded-xl shadow-xl shadow-primary/30 hover:scale-105 transition-all flex items-center gap-2.5 disabled:opacity-50"
-                  >
-                    <span>{step === 8 ? (isSubmitting ? "Calibrating..." : "Complete & View Recommendations") : "Continue Next Step"}</span>
-                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={handleNext}
+                  className="px-7 sm:px-9 py-3.5 sm:py-4 bg-gradient-to-r from-primary via-primary-fixed to-primary text-on-primary font-label-md text-xs sm:text-sm uppercase tracking-widest font-bold rounded-xl shadow-xl shadow-primary/30 hover:scale-105 transition-all flex items-center gap-2.5 disabled:opacity-50"
+                >
+                  <span>{step === 8 ? (isSubmitting ? "Calibrating..." : "Complete & View Recommendations") : "Continue Next Step"}</span>
+                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </button>
               </div>
 
             </div>

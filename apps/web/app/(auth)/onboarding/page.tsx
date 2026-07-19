@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -119,7 +119,7 @@ const PROFILING_QUESTIONS = [
   },
 ];
 
-export default function OnboardingWizardPage() {
+function OnboardingWizardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams?.get("next");
@@ -480,5 +480,13 @@ export default function OnboardingWizardPage() {
       </footer>
 
     </div>
+  );
+}
+
+export default function OnboardingWizardPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-surface-container-lowest" />}>
+      <OnboardingWizardContent />
+    </Suspense>
   );
 }

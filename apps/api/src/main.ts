@@ -25,10 +25,7 @@ async function bootstrap() {
 
   const app = await NestFactory.create(
     AppModule,
-    new ExpressAdapter(server),
-    {
-      bodyParser: false,
-    },
+    new ExpressAdapter(server)
   );
 
   const expressApp = app.getHttpAdapter().getInstance();

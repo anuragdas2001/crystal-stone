@@ -16,7 +16,7 @@ function PropertyAnalysisPageContent() {
 
   const handleUnlockRequest = () => {
     toast("Redirecting to secure investor portal sign-in...", { icon: "🔒" });
-    router.push("/login");
+    router.push(`/login?next=/properties/${slug}`);
   };
 
   return (
@@ -30,7 +30,7 @@ function PropertyAnalysisPageContent() {
             </span>
             <span className="text-on-surface-variant hidden sm:inline">•</span>
             <Link
-              href="/login"
+              href={`/login?next=/properties/${slug}`}
               onClick={() => toast("Redirecting to sign in...")}
               className="text-white font-bold underline hover:text-primary transition-colors flex items-center gap-1"
             >

@@ -17,6 +17,9 @@ model User {
   phoneNumber         String?   @unique
   phoneNumberVerified Boolean?  @default(false)
   image               String?
+  headline            String?
+  currentTitle        String?
+  currentCompany      String?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
   accounts            Account[]

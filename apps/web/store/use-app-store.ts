@@ -299,7 +299,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
     console.log("[Auth Store] 🚀 continueWithGoogle triggered. Target origin:", typeof window !== "undefined" ? window.location.origin : "server");
     set({ authOperation: "google", authError: null });
 
-    const targetCallback = `${typeof window !== "undefined" ? window.location.origin : ""}/dashboard`;
+    const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+    const targetCallback = callbackURL.startsWith("http") ? callbackURL : `${baseUrl}${callbackURL.startsWith("/") ? "" : "/"}${callbackURL}`;
     console.log("[Auth Store] 🔗 Initiating Google social login with callbackURL:", targetCallback);
 
     try {
@@ -335,7 +336,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
     console.log("[Auth Store] 🚀 continueWithLinkedIn triggered. Target origin:", typeof window !== "undefined" ? window.location.origin : "server");
     set({ authOperation: "linkedin", authError: null });
 
-    const targetCallback = `${typeof window !== "undefined" ? window.location.origin : ""}/dashboard`;
+    const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+    const targetCallback = callbackURL.startsWith("http") ? callbackURL : `${baseUrl}${callbackURL.startsWith("/") ? "" : "/"}${callbackURL}`;
     console.log("[Auth Store] 🔗 Initiating LinkedIn social login with callbackURL:", targetCallback);
 
     try {

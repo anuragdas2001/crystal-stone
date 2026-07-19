@@ -32,4 +32,13 @@ export class ProfilingController {
       recommendations: this.profilingService.getDynamicRecommendations(labels),
     };
   }
+
+  @Get('status')
+  async getProfilingStatus(@Query('userId') userId: string) {
+    if (!userId) {
+      return { hasProfile: false };
+    }
+    const hasProfile = await this.profilingService.checkProfileExists(userId);
+    return { hasProfile };
+  }
 }

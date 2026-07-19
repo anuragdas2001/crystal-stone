@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Phone, KeyRound, ArrowLeft } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
@@ -13,6 +13,8 @@ import { useAppStore } from "../../../store/use-app-store";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams?.get("next");
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [countryCode, setCountryCode] = useState("+1");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -23,13 +25,11 @@ export default function LoginPage() {
   const sendPhoneOtp = useAppStore((state) => state.sendPhoneOtp);
   const verifyPhoneSignIn = useAppStore((state) => state.verifyPhoneSignIn);
   const continueWithGoogle = useAppStore((state) => state.continueWithGoogle);
-  const continueWithLinkedIn = useAppStore((state) => state.continueWithLinkedIn);
   const clearAuthError = useAppStore((state) => state.clearAuthError);
 
   const isSendingOtp = authOperation === "send-otp";
   const isVerifying = authOperation === "verify-otp";
   const isGoogleLoading = authOperation === "google";
-  const isLinkedInLoading = authOperation === "linkedin";
 
   async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault();
@@ -67,6 +67,26 @@ export default function LoginPage() {
     toast.dismiss(loadingToast);
 
     if (result.ok) {
+      // Check onboarding status
+      const userId = useAppStore.getState().authUser?.id;
+      if (userId) {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+        try {
+          const res = await fetch(`${apiUrl}/profiling/status?userId=${userId}`);
+          const data = await res.json();
+          toast.success("Welcome back to Crystal Stone Private Portal.");
+          if (data.hasProfile) {
+            router.push(next || "/dashboard");
+          } else {
+            router.push(`/onboarding${next ? `?next=${encodeURIComponent(next)}` : ""}`);
+          }
+          router.refresh();
+          return;
+        } catch (e) {
+          console.error("Failed to fetch profiling status", e);
+        }
+      }
+      
       toast.success("Welcome back to Crystal Stone Private Portal.");
       router.push("/dashboard");
       router.refresh();
@@ -76,11 +96,8 @@ export default function LoginPage() {
   }
 
   async function handleGoogleSignIn() {
-    await continueWithGoogle("/dashboard");
-  }
-
-  async function handleLinkedInSignIn() {
-    await continueWithLinkedIn("/dashboard");
+    const callbackUrl = `/auth/callback${next ? `?next=${encodeURIComponent(next)}` : ""}`;
+    await continueWithGoogle(callbackUrl);
   }
 
   return (
@@ -269,7 +286,7 @@ export default function LoginPage() {
               type="button"
               variant="outline"
               onClick={handleGoogleSignIn}
-              disabled={isGoogleLoading || isLinkedInLoading}
+              disabled={isGoogleLoading}
               className="luxury-button flex h-14 w-full items-center justify-center gap-3 rounded-lg border border-outline-variant bg-transparent font-label-md text-label-md uppercase tracking-widest text-on-surface transition-colors hover:border-primary/40 hover:bg-surface-container-low"
             >
               <svg className="h-5 w-5" viewBox="0 0 48 48" aria-hidden="true">
@@ -291,23 +308,6 @@ export default function LoginPage() {
                 />
               </svg>
               {isGoogleLoading ? "Opening Google..." : "Continue with Google"}
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleLinkedInSignIn}
-              disabled={isGoogleLoading || isLinkedInLoading}
-              className="luxury-button flex h-14 w-full items-center justify-center gap-3 rounded-lg border border-outline-variant bg-transparent font-label-md text-label-md uppercase tracking-widest text-on-surface transition-colors hover:border-primary/40 hover:bg-surface-container-low"
-            >
-              <svg
-                className="h-5 w-5 fill-[#0A66C2]"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2v-8.37H6.46M7.83 6.75a1.6 1.6 0 0 0-1.6 1.6 1.6 1.6 0 0 0 1.6 1.6 1.6 1.6 0 0 0 1.6-1.6 1.6 1.6 0 0 0-1.6-1.6Z" />
-              </svg>
-              {isLinkedInLoading ? "Opening LinkedIn..." : "Continue with LinkedIn"}
             </Button>
           </div>
 

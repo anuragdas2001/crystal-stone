@@ -250,4 +250,20 @@ export class ProfilingService {
 
     return filtered.slice(0, 3); // Return top 3 tailored recommendations
   }
+
+  /**
+   * Checks if a user has already completed the onboarding profile.
+   */
+  async checkProfileExists(userId: string): Promise<boolean> {
+    if (!userId) return false;
+    try {
+      const profile = await this.prisma.investorProfile.findFirst({
+        where: { userId },
+      });
+      return !!profile;
+    } catch (error) {
+      this.logger.error(`Error checking profile existence for user ${userId}`, error);
+      return false;
+    }
+  }
 }

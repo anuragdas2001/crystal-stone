@@ -18,9 +18,11 @@ export function Sidebar({ isCollapsed, setIsCollapsed, pathname, handleLogout }:
     return pathname === href || pathname.startsWith(href + "/");
   };
 
-  const navItems = [
+  const isPropertyDetailPage = pathname.match(/^\/my-properties\/[^/]+$/);
+
+  const defaultNavItems = [
     { label: "Dashboard", icon: "dashboard", href: "/dashboard", exact: true },
-    { label: "Properties", icon: "real_estate_agent", href: "/my-properties" },
+    { label: "Properties", icon: "real_estate_agent", href: "/my-properties", exact: true },
     { label: "Documents", icon: "description", href: "/dashboard/documents" },
     { label: "Transactions", icon: "receipt_long", href: "/dashboard/transactions" },
     { label: "Market Insights", icon: "trending_up", href: "/dashboard/insights" },
@@ -30,6 +32,22 @@ export function Sidebar({ isCollapsed, setIsCollapsed, pathname, handleLogout }:
     { label: "Performance", icon: "leaderboard", href: "/dashboard/performance" },
     { label: "Analytics & Reports", icon: "analytics", href: "/dashboard/reports" },
   ];
+
+  const propertyNavItems = [
+    { label: "Back to Properties", icon: "arrow_back", href: "/my-properties", exact: true },
+    { label: "Overview", icon: "home", href: pathname + "#overview", exact: true },
+    { label: "Investment Snapshot", icon: "analytics", href: pathname + "#snapshot" },
+    { label: "Growth Intelligence", icon: "trending_up", href: pathname + "#growth" },
+    { label: "Location Intelligence", icon: "location_on", href: pathname + "#location" },
+    { label: "Due Diligence", icon: "verified_user", href: pathname + "#diligence" },
+    { label: "Comparables", icon: "compare_arrows", href: pathname + "#comparables" },
+    { label: "Wealth Simulator", icon: "calculate", href: pathname + "#simulator" },
+    { label: "Documents", icon: "description", href: pathname + "#documents" },
+    { label: "Gallery", icon: "photo_library", href: pathname + "#gallery" },
+    { label: "FAQs", icon: "help_outline", href: pathname + "#faqs" },
+  ];
+
+  const navItems = isPropertyDetailPage ? propertyNavItems : defaultNavItems;
 
   return (
     <aside
@@ -96,6 +114,28 @@ export function Sidebar({ isCollapsed, setIsCollapsed, pathname, handleLogout }:
           );
         })}
       </nav>
+
+
+      {isPropertyDetailPage && !isCollapsed && (
+        <div className="p-3">
+          <div className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-4">
+            <div className="text-[10px] text-on-surface-variant uppercase tracking-widest mb-3">Your Investment Advisor</div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-surface-container rounded-full overflow-hidden shrink-0">
+                <Image src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80" width={40} height={40} alt="Advisor" unoptimized />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-white">Rohit Sharma</div>
+                <div className="text-[10px] text-on-surface-variant">Senior Consultant</div>
+              </div>
+            </div>
+            <button className="w-full py-2 bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 hover:bg-[#25D366] hover:text-white rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2">
+              <span className="material-symbols-outlined text-[16px]">chat</span>
+              Chat on WhatsApp
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* User Footer Card */}
       <div className="border-t border-outline-variant/30 p-3 shrink-0">
